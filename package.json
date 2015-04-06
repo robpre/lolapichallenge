@@ -6,7 +6,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "jshint": "jshint ./client/js/ && jshint server/ && jshint scripts/ && echo Successfully hinted!",
-    "start": ". ./.env && node index.js"
+    "start": ". ./.env ; node index.js"
   },
   "repository": {
     "type": "git",

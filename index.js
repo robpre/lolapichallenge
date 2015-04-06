@@ -5,7 +5,7 @@ var debug = require('debug')('urf:index');
 
 var urf = express();
 var api = require('./server');
-var port = process.env.PORT || 9001;
+var port = parseInt(process.env.PORT, 10) || 9001;
 
 var setup = {
 	init: require('./scripts/init.js'),
