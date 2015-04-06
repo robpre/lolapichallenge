@@ -1,0 +1,24 @@
+{
+  "name": "lolapichallenge",
+  "version": "1.0.0",
+  "description": "Dunno yet",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/RpprRoger/lolapichallenge.git"
+  },
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/RpprRoger/lolapichallenge/issues"
+  },
+  "homepage": "https://github.com/RpprRoger/lolapichallenge",
+  "dependencies": {
+    "browserify": "^9.0.7",
+    "express": "^4.12.3"
+  },
+  "engine": "0.10"
+}
