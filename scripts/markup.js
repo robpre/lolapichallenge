@@ -1,14 +1,14 @@
 var Q = require('q');
 var glob = require('glob');
 var fs = require('fs');
+var debug = require('debug')('urf:scripts:markup');
 
 function copyFile(from, to) {
 	var copy = Q.defer();
-	// console.log('copying from', from);
-	// console.log('to', to);
+	debug('Copying from', from, 'to', to);
 	fs.createReadStream(from)
 		.pipe(fs.createWriteStream(to))
-		.on('done', copy.resolve)
+		.on('finish', copy.resolve)
 		.on('error', copy.reject);
 	return copy.promise;
 }
@@ -24,8 +24,8 @@ module.exports = function(root) {
 	function handler(defer) {
 		return function(err, files) {
 			if( err ) {
-				console.log('failed! ', err);
-				defer.reject();
+				debug('Failed copying! ', err);
+				defer.reject(err);
 			} else {
 				var fileMap = files.map(function(filePath) {
 					var newPath = filePath.replace(path + 'client', path + 'public');

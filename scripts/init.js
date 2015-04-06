@@ -1,30 +1,29 @@
 var Q = require('q');
 var mkdirp = require('mkdirp');
+var debug = require('debug')('urf:scripts:init');
 
-module.exports = function(root) {
-	var path = root.replace(/[^\/]$/, function(str, match) {
-		return match + '/';
-	});
+module.exports = function(path) {
 	var js = Q.defer();
 	var css = Q.defer();
 	// create public folder
 	mkdirp(path + 'public/js', function(err) {
 		if( err ) {
-			console.log('failed to make public/js!', err);
+			debug('Failed to make public/js!', err);
 			js.reject();
 		} else {
-			console.log('success! created public/js!');
+			debug('Success! created public/js!');
 			js.resolve();
 		}
 	});
 	mkdirp(path + 'public/css', function(err) {
 		if( err ) {
-			console.log('failed to make public/css!', err);
-			js.reject();
+			debug('Failed to make public/css!', err);
+			css.reject();
 		} else {
-			console.log('success! created public/css!');
-			js.resolve();
+			debug('Success! created public/css!');
+			css.resolve();
 		}
 	});
-	return Q.all([js, css]);
+
+	return Q.all([js.promise, css.promise]);
 };

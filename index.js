@@ -1,6 +1,7 @@
 var express = require('express');
 var fs = require('fs');
 var Q = require('q');
+var debug = require('debug')('urf:index');
 
 var urf = express();
 var api = require('./server');
@@ -9,38 +10,37 @@ var port = process.env.PORT || 9001;
 var setup = {
 	init: require('./scripts/init.js'),
 	scripts: require('./scripts/scripts.js'),
-	css: require('./scripts/styles.js'),
 	markup: require('./scripts/markup.js')
 };
 
-console.log('Creating public folder and starting urf server');
-setup.init(__dirname)
+debug('Creating public folder and starting urf server');
+debug('Running setup.init()');
+setup.init(passDir(__dirname))
+// done init
 .then(function() {
-	var sty = Q.defer();
-	setup.css(__dirname)
-		.then(function(result) {
-			console.log(result, 'asd');
-			fs.writeFileSync(__dirname + '/public/styles.css', result.css);
-			fs.writeFileSync(__dirname + '/public/styles.css.map', result.map);
-			sty.resolve();
-		});
-
-	return sty;
-})
+	debug('Running setup.markup()');
+	return setup.markup(passDir(__dirname));
+}, rageQuit)
+// done markup
 .then(function() {
-	return setup.markup(__dirname);
-})
-// once we're done 
-.done(function() {
-	setup.scripts(__dirname)
+	var scriptsDone = Q.defer();
+	debug('Running setup.scripts()');
+	setup.scripts(passDir(__dirname))
 		.pipe(fs.createWriteStream('public/js/bundle.js'))
-		.on('finish', startServer)
-		.on('error', handleBreakage);
-});
+		.on('finish', scriptsDone.resolve)
+		.on('error', scriptsDone.reject);
+
+	return scriptsDone.promise;
+}, rageQuit)
+// done scripts
+.then(function() {
+	debug('Running startServer()');
+	startServer();
+}, rageQuit);
 
 
 function startServer() {
-	urf.use('/', express.static(__dirname + 'public/'));
+	urf.use('/', express.static(passDir(__dirname) + 'public/'));
 	urf.get('/', function(req, res) {
 		res.redirect('/index.html');
 	});
@@ -48,10 +48,14 @@ function startServer() {
 	urf.use('/api', api);
 
 	urf.listen(port);
-	console.log('lsitening on port: ' + port);
+	debug('Listening on port: ' + port);
 }
 
-function handleBreakage() {
-	console.err.apply(console, arguments);
+function rageQuit() {
+	console.error.apply(console, arguments);
 	process.exit(1);
+}
+
+function passDir(dir) {
+	return dir + '/';
 }
