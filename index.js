@@ -3,9 +3,11 @@ var fs = require('fs');
 var Q = require('q');
 var debug = require('debug')('urf:index');
 
-var urf = express();
-var api = require('./server');
 var port = parseInt(process.env.PORT, 10) || 9001;
+var key = process.env.API_KEY;
+
+var urf = express();
+var api = require('./server')(key);
 
 var setup = {
 	init: require('./scripts/init.js'),
@@ -40,6 +42,7 @@ setup.init(passDir(__dirname))
 
 
 function startServer() {
+	// TODO: move to server/client
 	urf.use('/', express.static(passDir(__dirname) + 'public/'));
 	urf.get('/', function(req, res) {
 		res.redirect('/index.html');
