@@ -27,13 +27,8 @@ setup.init(passDir(__dirname))
 	debug('Running setup.scripts()');
 	setup.scripts(passDir(__dirname))
 		.pipe(fs.createWriteStream('public/js/bundle.js'))
-		.on('finish', function() {
-			scriptsDone.resolve();
-		})
-		.on('error', function() {
-			//handle error from args? 
-			scriptsDone.reject();
-		});
+		.on('finish', scriptsDone.resolve)
+		.on('error', scriptsDone.reject);
 
 	return scriptsDone.promise;
 }, rageQuit)
