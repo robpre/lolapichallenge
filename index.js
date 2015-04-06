@@ -14,23 +14,37 @@ var setup = {
 };
 
 debug('Creating public folder and starting urf server');
+debug('Running setup.init()');
 setup.init(passDir(__dirname))
+// done init
 .then(function() {
 	debug('Running setup.markup()');
 	return setup.markup(passDir(__dirname));
 }, rageQuit)
-// once we're done 
+// done markup
 .then(function() {
+	var scriptsDone = Q.defer();
 	debug('Running setup.scripts()');
 	setup.scripts(passDir(__dirname))
 		.pipe(fs.createWriteStream('public/js/bundle.js'))
-		.on('finish', startServer)
-		.on('error', handleBreakage);
+		.on('finish', function() {
+			scriptsDone.resolve();
+		})
+		.on('error', function() {
+			//handle error from args? 
+			scriptsDone.reject();
+		});
+
+	return scriptsDone.promise;
+}, rageQuit)
+// done scripts
+.then(function() {
+	debug('Running startServer()');
+	startServer();
 }, rageQuit);
 
 
 function startServer() {
-	debug('Starting server');
 	urf.use('/', express.static(passDir(__dirname) + 'public/'));
 	urf.get('/', function(req, res) {
 		res.redirect('/index.html');

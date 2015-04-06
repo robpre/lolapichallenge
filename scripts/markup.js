@@ -1,15 +1,16 @@
 var Q = require('q');
 var cp = require('glob-copy');
+var debug = require('debug')('urf:scripts:markup');
 
 module.exports = function(path) {
 	var copy = Q.defer();
-console.log(path);
+
 	cp(path + '/client/**/*.html', path + '/public', function(err, files) {
 		if( err ) {
-			console.log('aahhh fuck');
+			debug('Failed to copy markup.');
 			copy.reject();
 		} else {
-			console.log('copied', files);
+			debug('Successful copy', files);
 			copy.resolve();
 		}
 	});
