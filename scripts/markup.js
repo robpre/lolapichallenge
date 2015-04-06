@@ -1,10 +1,7 @@
 var Q = require('q');
 var cp = require('glob-copy');
 
-module.exports = function(root) {
-	var path = root.replace(/[^\/]$/, function(str, match) {
-		return match + '/';
-	});
+module.exports = function(path) {
 	var copy = Q.defer();
 console.log(path);
 	cp(path + '/client/**/*.html', path + '/public', function(err, files) {
