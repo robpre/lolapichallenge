@@ -9,13 +9,26 @@ var port = process.env.PORT || 9001;
 var setup = {
 	init: require('./scripts/init.js'),
 	scripts: require('./scripts/scripts.js'),
-	css: require('./scripts/styles.js')
+	css: require('./scripts/styles.js'),
+	markup: require('./scripts/markup.js')
 };
 
 console.log('Creating public folder and starting urf server');
 setup.init(__dirname)
 .then(function() {
-	return setup.css(__dirname);
+	var sty = Q.defer();
+	setup.css(__dirname)
+		.then(function(result) {
+			console.log(result, 'asd');
+			fs.writeFileSync(__dirname + '/public/styles.css', result.css);
+			fs.writeFileSync(__dirname + '/public/styles.css.map', result.map);
+			sty.resolve();
+		});
+
+	return sty;
+})
+.then(function() {
+	return setup.markup(__dirname);
 })
 // once we're done 
 .done(function() {
@@ -27,10 +40,12 @@ setup.init(__dirname)
 
 
 function startServer() {
-	urf.configure(function() {
-		urf.use('/', express.static(__dirname + 'public/'));
-		urf.use('/api', api);
+	urf.use('/', express.static(__dirname + 'public/'));
+	urf.get('/', function(req, res) {
+		res.redirect('/index.html');
 	});
+
+	urf.use('/api', api);
 
 	urf.listen(port);
 	console.log('lsitening on port: ' + port);

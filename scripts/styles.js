@@ -14,5 +14,5 @@ module.exports = function(root) {
 		outputStyle: 'compressed'
 	});
 
-	return styles;
+	return styles.promise;
 }
