@@ -18,7 +18,7 @@ module.exports = function(bundle) {
 			b.add(scriptPath);
 		});
 
-		fs.createWriteStream(bundle)
+		b.bundle().pipe(fs.createWriteStream(bundle + 'public/js/bundle.js'))
 			.on('finish', resolve)
 			.on('error', reject);
 	});
