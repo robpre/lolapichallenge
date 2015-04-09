@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "jshint": "jshint ./client/js/ && jshint server/ && jshint scripts/ && echo Successfully hinted!",
-    "start": ". ./.env && node index.js"
+    "start": ". ./.env ; node index.js",
+    "develop": ". ./.env ; node scripts/dev.js"
   },
   "repository": {
     "type": "git",
@@ -31,6 +32,7 @@
   "engine": "0.10",
   "devDependencies": {
     "debug": "^2.1.3",
+    "gaze": "0.6.4",
     "jshint": "^2.6.3"
   }
 }
