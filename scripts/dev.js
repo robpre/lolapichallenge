@@ -35,6 +35,18 @@ function listenForFileChanges() {
 				.catch(error);
 		});
 	});
+	gaze('server/**/*.js', function(err, watcher) {
+		if(err) {
+			return error(err);
+		}
+
+		this.on('all', function(type, file) {
+			debug(type + ' ' + file);
+			urf.stop()
+				.fin(urf.listen.bind(urf))
+				.catch(error);
+		});
+	});
 }
 
 urf.setup()
