@@ -30,6 +30,7 @@ var card = function(base) {
 	return module;
 };
 
+process.stdout.write('[');
 process.stdin.pipe(JSONStream.parse('*', function(data) {
 		var playerCard = card(data);	
 		debug.general('Preparing to loop through '+imports.length+' imports');
@@ -37,6 +38,6 @@ process.stdin.pipe(JSONStream.parse('*', function(data) {
 			playerCard = generator(playerCard);
 		});
 		debug.general('Writing out card');
-		process.stdout.write(playerCard.format());
+		process.stdout.write(playerCard.format() + ',');
 }));
 
