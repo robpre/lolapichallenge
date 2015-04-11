@@ -1,0 +1,231 @@
+var qs 			= require('querystring');
+var request 	= require('request');
+var debug	= {
+	general: 	require('debug')('urf:scripts:parse:api:general'),
+	games: 		require('debug')('urf:scripts:parse:api:games'),
+	stats:		require('debug')('urf:scripts:parse:api:stats'),
+	queue:		require('debug')('urf:scripts:parse:api:queue')
+};
+var _ 			= require('lodash');
+var util 		= require('util');
+var Q 			= require('q');
+var moment  	= require('moment');
+var JSONStream  = require('JSONStream');
+var argv 		= require('yargs').argv;
+var Bottleneck 	= require('bottleneck');
+
+var ENDPOINTS = (function() {
+	var config = {
+		urf: 'https://euw.api.pvp.net/api/lol/euw/v4.1/game/ids',
+		match: 'https://euw.api.pvp.net/api/lol/euw/v2.2/match/'
+	};
+	var grabEndpoint = function(endpoint) {
+		return config[endpoint];
+	};
+	return {
+		get: grabEndpoint
+	};
+})();
+
+var lolApi = function(config) {
+	var api = (function() {
+		var config = {}, limiter;
+		// bronze league date handling function
+		var rootDate = function(dateString, root) {
+			var max = 'T23:59:59';
+			var min = 'T00:00:00';
+			var result;
+			if(root) { 
+				result = dateString + min;
+				debug.general('Rooting '+dateString+' -> '+result);
+			} else {
+				result = dateString + max;
+				debug.general('Buffing '+dateString+' -> '+result);
+			}
+			return result;
+		};
+		//built this little thing to pass to the limiter slowly
+		//this is so we can inject card requests into the front of the queu
+		var requestQueue = (function() {
+			var queue = [];
+			var started = false;
+			var start = function() {
+				debug.queue('Starting controlling queue');
+				started = setInterval(action, 1000);
+			};
+			var stop = function() {
+				if(started !== false) {
+					debug.queue('Stopping controlling queue');
+					clearInterval(started);
+				}
+				started = false;
+			};
+
+			var add = function(job) {
+				debug.queue('Adding job to queue');
+				queue.push(job);
+			};
+
+			var force = function(job) {
+				debug.queue('Forcing job on queue');
+				queue.unshift(job);
+			};
+
+			var action = function() {
+				if(started) { 
+					var job = queue.shift();
+					if(typeof job !== 'undefined') {
+						debug.queue('Running queue job');
+						job();
+					}
+				}
+			};
+
+			return {
+				start: start,
+				stop: stop,
+				add: add,
+				force: force
+			};
+		})();
+		var setup = function(options) {
+			options = options || {};	
+			config = _.merge(config, options);
+
+			if(typeof config.start === undefined) {
+				throw new Error('Start parameter is undefined');
+			}
+			if(typeof config.finish === undefined) {
+				throw new Error('Finish parameter is undefined');
+			}
+
+			//NOTE convert to unix timestamp
+			config.start = parseInt(moment(rootDate(config.start, true)).format('X'));
+			debug.general('Converted start to: '+config.start);
+			config.finish = parseInt(moment(rootDate(config.finish, false)).format('X'));
+			debug.general('Converted finish to: '+config.finish);
+			limiter = new Bottleneck(1, 1000);
+		};
+		var buildUrl = function(url, args) {
+			return url + '?' + qs.stringify(args);
+		};
+		var streamUrfGames = function(timestamp, operator, callback) {
+			var requestConfig = {
+				url: buildUrl(ENDPOINTS.get('urf'), { beginDate: timestamp, api_key: config.apiKey })
+			};
+			debug.games('Retrieving t:'+timestamp+' via '+JSON.stringify(requestConfig));
+			return operator(request(requestConfig).on('end', callback));
+		};
+		var streamGameStats = function(match, operator, callback) {
+			debug.stats('Getting stats for match: '+match);
+			var requestConfig = {
+					url: buildUrl(ENDPOINTS.get('match') + match.toString(), { includeTimeline: false, api_key: config.apiKey })
+			};
+			debug.stats('Retrieving m:'+match+' via '+JSON.stringify(requestConfig));
+			return operator(request(requestConfig).on('end', callback));
+		};
+
+		var buildInterval = function() {
+			var stamps = [];
+			var jump = (60*5); //
+			var start = config.start;
+			stamps.push(start);
+			do {
+				start = start + jump;
+				stamps.push(start);
+			} while ( start < config.finish );
+
+			debug.general('Collected intervals: '+JSON.stringify(stamps, null, 1));
+			return stamps;
+		};
+
+		var findStats = function() {
+			// build intervals of 5 minutes
+			var interval = buildInterval();
+			var processStats = {
+				games: 0,
+				stats: 0
+			};
+			var promiseList = [];
+
+			
+			//loop through each interval
+			_.each(interval, function(time) {
+				//set up a promise for when each game has completed streaming
+				var gamePromise = Q.defer();
+				//send the limiter a stream function with a time parameter, stream processing function and a completion callback
+				requestQueue.add(function() { 
+					limiter.submit(streamUrfGames, time, function(stream) {
+						//this function wraps the request (stream)
+						//here we are chunking up the stream into JSON
+						stream.pipe(JSONStream.parse('*', function(id) {
+							debug.games('Picked up id: '+id);
+							//each id is now used to retrieve game stats	
+							//set up a promise for when each stat has completed streaming
+							var statPromise = Q.defer();
+							//send the limiter a stream function with an id parameter, stream processing function and a completion callback
+							requestQueue.force(function() { 
+								limiter.submit(streamGameStats, id, function(statStream) {
+									//this function wraps the request (stream)
+									//here we are chunking up the stream into JSON
+									statStream.pipe(JSONStream.parse(['participants'], function(players) {
+										debug.stats('Picked up participants block length: '+players.length);
+										_.each(players, function(stats) {
+											//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
+											process.stdout.write(JSON.stringify(stats));
+											// pipe out each stat here
+											processStats.stats++;
+											//tell some nice stats
+										});
+										shout('Completed '+processStats.games+' games, '+processStats.stats+' stats');
+										return null;
+									}));
+								}, function() {
+									//promise complete	
+									statPromise.resolve();
+								});
+							});
+							processStats.games++;
+							shout('Completed '+processStats.games+' games, '+processStats.stats+' stats');
+							promiseList.push(statPromise.promise);
+							return null;
+						}));
+					}, function() {
+						//promise complete	
+						gamePromise.resolve(Q.delay(5000));
+					});
+				});
+				promiseList.push(gamePromise.promise);
+			});
+
+			requestQueue.start();
+			Q.allSettled(promiseList).then(function() {
+				shout('Completed all ' + interval.length + ' available intervals');
+				requestQueue.stop();
+			});
+		};
+
+		var shout = function() {
+			//We sent to STDERR so we don't break our unix pipes
+			console.error.apply(console, arguments);
+		};
+
+		return {
+			stats: findStats,
+			setup: setup
+		};
+	})();
+
+	api.setup(config);
+	return api;
+};
+
+debug.general('Parse argument start: ' +argv.start);
+debug.general('Parse argument finish: ' +argv.finish);
+
+var api = lolApi({
+	apiKey: process.env.API_KEY,
+	start: argv.start,
+	finish: argv.finish
+});
+api.stats();
