@@ -5,9 +5,10 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "jshint": "jshint ./client/js/ && jshint server/ && jshint scripts/ && echo Successfully hinted!",
-    "start": ". ./.env ; node index.js",
-    "develop": ". ./.env ; node scripts/dev.js"
+    "jshint": "jshint ./client/js/ && jshint server/ && jshint scripts/ && echo \"Successfully hinted!\"",
+    "start": ". ./.env; node index.js",
+    "develop": ". ./.env ; node scripts/dev.js",
+    "feed": ". ./.env; ./scripts/parse/api.js --start=\"2015-04-10\" --finish=\"2015-04-10\" | ./scripts/parse/card.js"
   },
   "repository": {
     "type": "git",
@@ -36,8 +37,14 @@
   },
   "engine": "0.10",
   "devDependencies": {
+    "JSONStream": "^0.10.0",
     "debug": "^2.1.3",
-    "gaze": "0.6.4",
-    "jshint": "^2.6.3"
+    "event-stream": "^3.3.0",
+    "jshint": "^2.6.3",
+    "lodash": "^3.6.0",
+    "moment": "^2.10.2",
+    "requiredir": "^1.0.6",
+    "yargs": "^3.7.1",
+    "gaze": "0.6.4"
   }
 }
