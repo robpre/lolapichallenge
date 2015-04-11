@@ -1,10 +1,12 @@
+#!/usr/bin/env node
 var qs 			= require('querystring');
 var request 	= require('request');
 var debug	= {
 	general: 	require('debug')('urf:scripts:parse:api:general'),
 	games: 		require('debug')('urf:scripts:parse:api:games'),
 	stats:		require('debug')('urf:scripts:parse:api:stats'),
-	queue:		require('debug')('urf:scripts:parse:api:queue')
+	queue:		require('debug')('urf:scripts:parse:api:queue'),
+	info:		require('debug')('urf:scripts:parse:api:info'),
 };
 var _ 			= require('lodash');
 var util 		= require('util');
@@ -149,6 +151,7 @@ var lolApi = function(config) {
 			var promiseList = [];
 
 			
+			process.stdout.write("[");
 			//loop through each interval
 			_.each(interval, function(time) {
 				//set up a promise for when each game has completed streaming
@@ -172,12 +175,12 @@ var lolApi = function(config) {
 										debug.stats('Picked up participants block length: '+players.length);
 										_.each(players, function(stats) {
 											//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
-											process.stdout.write(JSON.stringify(stats));
+											process.stdout.write(JSON.stringify(stats) + ',');
 											// pipe out each stat here
 											processStats.stats++;
 											//tell some nice stats
 										});
-										shout('Completed '+processStats.games+' games, '+processStats.stats+' stats');
+										debug.info('Completed '+processStats.games+' games, '+processStats.stats+' stats');
 										return null;
 									}));
 								}, function() {
@@ -186,7 +189,7 @@ var lolApi = function(config) {
 								});
 							});
 							processStats.games++;
-							shout('Completed '+processStats.games+' games, '+processStats.stats+' stats');
+							debug.info('Completed '+processStats.games+' games, '+processStats.stats+' stats');
 							promiseList.push(statPromise.promise);
 							return null;
 						}));
@@ -200,14 +203,10 @@ var lolApi = function(config) {
 
 			requestQueue.start();
 			Q.allSettled(promiseList).then(function() {
-				shout('Completed all ' + interval.length + ' available intervals');
+				process.stdout.write("]");
+				debug.info('Completed all ' + interval.length + ' available intervals');
 				requestQueue.stop();
 			});
-		};
-
-		var shout = function() {
-			//We sent to STDERR so we don't break our unix pipes
-			console.error.apply(console, arguments);
 		};
 
 		return {

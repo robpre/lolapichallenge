@@ -6,7 +6,8 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "jshint": "jshint ./client/js/ && jshint server/ && jshint scripts/ && echo \"Successfully hinted!\"",
-    "start": ". ./.env && node index.js"
+    "start": ". ./.env && node index.js",
+    "feed": ". ./.env && ./scripts/parse/api.js --start=\"2015-04-10\" --finish=\"2015-04-10\" | ./scripts/parse/card.js"
   },
   "repository": {
     "type": "git",
@@ -36,6 +37,7 @@
     "jshint": "^2.6.3",
     "lodash": "^3.6.0",
     "moment": "^2.10.2",
+    "requiredir": "^1.0.6",
     "yargs": "^3.7.1"
   }
 }
