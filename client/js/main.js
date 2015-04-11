@@ -2,5 +2,7 @@ var angular = require('angular');
 
 console.log('loaded!');
 
-alert('ashahahha');
+// deps
+angular.module('Urf')
+.directives('example', require('./directives/exmaple.js'));
 
