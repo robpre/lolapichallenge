@@ -30,9 +30,16 @@ var card = function(base) {
 	return module;
 };
 
+var finalCard = {
+	shiny: true || false,
+	rank: 'UNRANKED' || 'BRONZE' || 'SILVER' || 'GOLD' || 'PLATINUM' || 'DIAMOND',
+	type: 'URF' || '5x5',
+	name: '',
+};
+
 process.stdout.write('[');
 process.stdin.pipe(JSONStream.parse('*', function(data) {
-		var playerCard = card(data);	
+		var playerCard = card(data);
 		debug.general('Preparing to loop through '+imports.length+' imports');
 		_.each(imports, function(generator) {
 			playerCard = generator(playerCard);
@@ -40,4 +47,3 @@ process.stdin.pipe(JSONStream.parse('*', function(data) {
 		debug.general('Writing out card');
 		process.stdout.write(playerCard.format() + ',');
 }));
-
