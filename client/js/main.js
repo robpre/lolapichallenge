@@ -1,8 +1,8 @@
 var angular = require('angular');
 
-angular.module('ModuleName')
-	.directive('thing', require('./directives/example.js'))
-
-	
-
 console.log('loaded!');
+
+// deps
+angular.module('Urf')
+.directives('example', require('./directives/exmaple.js'));
+

@@ -1,9 +1,45 @@
 var Q = require('q');
 var glob = require('glob');
-var fs = require('fs');
 var path = require('path');
 var debug = require('debug')('urf:scripts:markup');
 var que = require('../lib/que');
+var fs = require('fs');
+var _ = require('lodash');
+
+var sass = require('node-sass');
+var Transform = require('stream').Transform;
+function sassify(opts) {
+	var sassTransform = new Transform();
+	var cssString = '';
+	sassTransform._transform = function(chunk, enc, next) {
+		cssString += chunk.toString();
+		next();
+	};
+	sassTransform._flush = function(next) {
+		var self = this;
+		sass.render(_.extend(opts, {
+			data: cssString,
+			success: function(result) {
+				self.push(result.css);
+				next();
+			},
+			error: function(err) {
+				debug('couldn\'t sassify');
+				debug(err);
+			}
+		}));
+	};
+
+	return sassTransform;
+}
+
+var magics = ['*', '?', '[', '!', '+', '@'];
+function firstMagicCharIndex(string) {
+	return magics.reduce(function(lastInd, curChar) {
+		// if we already found a char then just close the loop
+		return lastInd > -1 ? lastInd : string.indexOf(curChar);
+	}, -1);
+}
 
 function copyFile(from, to, transform) {
 	return Q.Promise(function(resolve, reject) {
@@ -23,40 +59,82 @@ function copyFile(from, to, transform) {
 		}
 	});
 }
-// TODO: make this better
-function transformPath(filePath, cwd) {
-	var resolved = path.resolve(cwd, filePath);
-	var reg = new RegExp(path.sep + 'client' + path.sep);
-	return resolved.replace(reg, path.sep + 'public' + path.sep);
+
+function reExt(file, ext) {
+	if(ext) {
+		return file.replace(new RegExp(path.extname(file) + '$'), ext);
+	}
+	return file;
+}
+
+function base(pathString) {
+	return pathString.split(path.sep).pop() || '';
 }
 
 module.exports = function(basePath/*, globs*/) {
-	var globs = ['client/**/*.html', 'client/**/*.css'];
+	// TODO: Taake these as arguments perhaps
+	var globs = [{
+		srcGlob: 'client/**/*.html',
+		dest: 'public/'
+	}, {
+		srcGlob: 'client/**/*.scss',
+		dest: 'public/',
+		transform: function() {
+			return sassify({
+				sourceMapEmbed: process.env.NODE_ENV === 'development',
+				outputStyle: 'compressed'
+			});
+		},
+		ext: '.css'
+	}, {
+		srcGlob: 'node_modules/bootstrap/dist/css/bootstrap+(.min.css|.css.map)',
+		dest: 'public/css/'
+	}];
 	var opts = {
 		cwd: basePath
 	};
 
-	return Q.all(globs.map(function(pattern) {
+	return Q.all(globs.map(function( pattern ) {
 		return Q.Promise(function(resolve, reject) {
-			glob(path.resolve(basePath, pattern), opts, function(err, files) {
+			var fullPathGlob = path.resolve(basePath, pattern.srcGlob);
+			var fullPathDest = path.resolve(basePath, pattern.dest);
+
+			// find files which match the globbing pattern provided
+			glob(fullPathGlob, opts, function(err, files) {
 				if( err ) {
 					debug('Error matching files', err);
 					reject(err);
 				} else {
 					var filePromises = files.map(function(fileToCopy) {
-						return que(copyFile, fileToCopy, transformPath(fileToCopy, basePath));
-					});
-					var first = filePromises.splice(0, 1)[0];
+						// find out where the glob starts
+						var globbingIndex = firstMagicCharIndex(fullPathGlob);
 
-					filePromises.reduce(Q.when, first())
-						.then(resolve)
-						.catch(reject);
+						if(globbingIndex > -1) {
+							// get the destination
+							var dest = fullPathDest.slice(0, globbingIndex);
+
+							var globFile = base(fullPathGlob.slice(0, globbingIndex));
+
+							// then join /root path/globfile/matched glob pattern/
+							dest = path.join(dest, globFile + fileToCopy.slice(globbingIndex));
+							// dest = /home/rob/websites/lolapichallenge/public/css/styles.scss
+							return que(copyFile, fileToCopy, reExt(dest, pattern.ext), pattern.transform && pattern.transform());
+						}
+					});
+
+					var first = filePromises.splice(0, 1)[0];
+					if(first) {
+						filePromises.reduce(Q.when, first())
+
+							.then(resolve)
+							.catch(reject);
+					}
 				}
 			});
 		});
 	}));
 };
 
-if( !module.parent ) {
+if(!module.parent) {
 	module.exports(process.cwd());
 }
