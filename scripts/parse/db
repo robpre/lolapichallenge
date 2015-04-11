@@ -1,0 +1,46 @@
+#!/usr/bin/env node
+var MongoClient = require('mongodb').MongoClient;
+var argv = require('yargs')
+	.alias('c', 'collection')
+	.argv;
+var debug = require('debug')('urf:scripts:parse:db');
+var JSONStream = require('JSONStream');
+
+var collectionName = argv.collection || argv._[0];
+var MONGO_URL = process.env.MONGO_URL;
+
+function bail(msg, err) {
+	return !console.error(msg, err) && process.exit(1);
+}
+
+if(process.stdin.isTTY) {
+	return bail('please pipe me data');
+}
+if(!collectionName) {
+	return bail('missing collection');
+}
+if(!MONGO_URL) {
+	return bail('missing MONGO_URL in environment');
+}
+
+function insert(db, name, data) {
+	var dbCollection = db.collection(name);
+	dbCollection.insert(data, function(err, result) {
+		if(err) {
+			return bail(err);
+		}
+		debug('inserted ' + data + ' into ' + name);
+	});
+}
+MongoClient.connect(MONGO_URL, function(err, db) {
+	if(err) {
+		return bail('db connection error', err);
+	}
+	process.stdin
+		.pipe(JSONStream.parse('*', function(chunk) {
+			insert(db, collectionName, chunk);
+		}));
+		// .pipe(jsonConsumer(db))
+		// 	.on('end', db.close.bind(db))
+		// 	.on('end', console.log.bind(console, 'Done!'));
+});
