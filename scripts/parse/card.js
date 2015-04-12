@@ -51,7 +51,10 @@ var finalCard = {
 	shiny: true || false,
 	rank: 'UNRANKED' || 'BRONZE' || 'SILVER' || 'GOLD' || 'PLATINUM' || 'DIAMOND',
 	type: 'URF' || '5x5',
-	champion: 'Alister',
+	region: 'EUW',
+	champion: {
+		name: 'Alister'
+	},
 	stats: {
 		kills: 17,
 		deaths: 18
@@ -62,7 +65,7 @@ var finalCard = {
 process.stdout.write('[');
 process.stdin.pipe(JSONStream.parse('*', function(data) {
 		var playerCard = card(data);
-		debug.general('Preparing to loop through '+imports.length+' imports');
+		debug.general('Preparing to loop through '+(imports.length + 1)+' imports');
 
 		var genPromises = imports.toArray().map(playerCard.applyGenerator);
 		// imports exposes a toArray method

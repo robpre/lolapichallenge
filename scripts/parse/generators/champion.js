@@ -4,19 +4,19 @@ var ENDPOINTS = require('../endpoints.js');
 var API_KEY = process.env.API_KEY;
 
 var champDataToFetch = [
-	'all',
+	// 'all',
 	// the following are options we can select from
 	// 'allytips',
 	// 'altimages',
-	// 'blurb',
+	'blurb',
 	// 'enemytips',
-	// 'image', // TODO: link into how images will be fetched: https://developer.riotgames.com/docs/static-data
-	// 'info',
+	'image', // TODO: link into how images will be fetched: https://developer.riotgames.com/docs/static-data
+	'info',
 	// 'lore',
 	// 'partype',
 	// 'passive',
 	// 'recommended',
-	// 'skins',
+	'skins',
 	// 'spells',
 	// 'stats',
 	// 'tags'

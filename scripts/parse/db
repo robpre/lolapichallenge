@@ -25,7 +25,7 @@ if(!MONGO_URL) {
 
 function insert(db, name, data) {
 	var dbCollection = db.collection(name);
-	dbCollection.insert(data, function(err, result) {
+	dbCollection.insert(data, function(err/*, result*/) {
 		if(err) {
 			return bail(err);
 		}

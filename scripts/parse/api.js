@@ -8,7 +8,6 @@ var debug	= {
 	info:		require('debug')('urf:scripts:parse:api:info'),
 };
 var _ 			= require('lodash');
-var util 		= require('util');
 var Q 			= require('q');
 var moment  	= require('moment');
 var JSONStream  = require('JSONStream');
@@ -124,6 +123,18 @@ var lolApi = function(config) {
 			debug.general('Collected intervals: '+JSON.stringify(stamps, null, 1));
 			return stamps;
 		};
+		var handleGameObj = function(match) {
+			var matchStats = _.omit(match, 'participants', 'teams');
+			var teamData = _.indexBy(match.teams, 'teamId');
+			var players = match.participants;
+			debug.stats('Picked up participants block length: '+players.length);
+			_.each(players, function(stats) {
+				//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
+				stats.matchData = matchStats;
+				stats.teams = teamData;
+				process.stdout.write(JSON.stringify(stats) + ',');
+			});
+		};
 
 		var findStats = function() {
 			// build intervals of 5 minutes
@@ -134,7 +145,6 @@ var lolApi = function(config) {
 			};
 			var promiseList = [];
 
-			
 			process.stdout.write('[');
 			//loop through each interval
 			_.each(interval, function(time) {
@@ -151,22 +161,20 @@ var lolApi = function(config) {
 							//set up a promise for when each stat has completed streaming
 							var statPromise = Q.defer();
 							//send the limiter a stream function with an id parameter, stream processing function and a completion callback
-							requestQueue.force(function() { 
+							requestQueue.force(function() {
 								limiter.submit(streamGameStats, id, function(statStream) {
 									//this function wraps the request (stream)
 									//here we are chunking up the stream into JSON
-									statStream.pipe(JSONStream.parse(['participants'], function(players) {
-										debug.stats('Picked up participants block length: '+players.length);
-										_.each(players, function(stats) {
-											//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
-											process.stdout.write(JSON.stringify(stats) + ',');
-											// pipe out each stat here
-											processStats.stats++;
-											//tell some nice stats
+									var obj = {};
+									statStream
+										// we are essentially using json stream to validate the input
+										.pipe(JSONStream.parse('*', function(data, keyArr) {
+											var key = keyArr[0];
+											obj[key] = data;
+										})).on('end', function() {
+											handleGameObj(obj);
+											debug.info('Completed '+processStats.games+' games, '+ processStats.stats++ +' stats');
 										});
-										debug.info('Completed '+processStats.games+' games, '+processStats.stats+' stats');
-										return null;
-									}));
 								}, function() {
 									//promise complete	
 									statPromise.resolve();
