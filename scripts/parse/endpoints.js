@@ -9,7 +9,10 @@ module.exports = (function() {
 	var config = {
 		urf: 'https://euw.api.pvp.net/api/lol/euw/v4.1/game/ids',
 		match: 'https://euw.api.pvp.net/api/lol/euw/v2.2/match/%s',
-		champion: 'https://global.api.pvp.net/api/lol/static-data/euw/v1.2/champion/%s'
+		champion: 'https://global.api.pvp.net/api/lol/static-data/euw/v1.2/champion/%s',
+		championImageSplash: 'http://ddragon.leagueoflegends.com/cdn/img/champion/loading/%s',
+		championImage: 'http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/%s',
+		mapImage: 'http://ddragon.leagueoflegends.com/cdn/5.2.1/img/map/map11.png'
 	};
 	return {
 		get: function(endpoint, query) {

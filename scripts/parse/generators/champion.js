@@ -1,36 +1,41 @@
 var request = require('request');
 var ENDPOINTS = require('../endpoints.js');
+var _ = require('lodash');
 
 var API_KEY = process.env.API_KEY;
 
 var champDataToFetch = [
 	// 'all',
 	// the following are options we can select from
-	// 'allytips',
-	// 'altimages',
+	'allytips',
+	'altimages',
 	'blurb',
-	// 'enemytips',
+	'enemytips',
 	'image', // TODO: link into how images will be fetched: https://developer.riotgames.com/docs/static-data
 	'info',
-	// 'lore',
-	// 'partype',
-	// 'passive',
+	'lore',
+	'partype',
+	'passive',
 	// 'recommended',
 	'skins',
 	// 'spells',
-	// 'stats',
-	// 'tags'
+	'stats',
+	'tags'
 ];
-module.exports = function(card, stats, done) {
+var imageKeys = ['image', 'altimages', 'skins', 'altimages'];
+module.exports = function(card, playerData, done) {
+
 	var url = ENDPOINTS.get('champion', {
 		api_key: API_KEY,
 		champData: champDataToFetch.join(',')
-	}, stats.championId);
-	request(url, function(err, response, champData) {
+	}, playerData.championId);
+	request(url, function(err, response, champJson) {
 		if(err || response.statusCode !== 200) {
-			return done(err || champData);
+			return done(err || champJson);
 		}
-		card.champion = JSON.parse(champData);
+		var champData = JSON.parse(champJson);
+		card.champion = _.omit(champData, imageKeys);
+		card.championImage = _.pick(champData, imageKeys);
 		done();
 	});
 };

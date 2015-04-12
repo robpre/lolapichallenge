@@ -8,10 +8,19 @@ var requiredir = require('requiredir');
 
 // generators
 var imports = requiredir('./generators');
+var package = require('../../package.json');
 
 var card = function(base) {
 	var module = (function() {
-		var obj = {};
+		var obj = {
+			version: package.version,
+			shiny: false,
+			rank: 'N/A',
+			type: 'N/A',
+			region: 'N/A',
+			champion: {},
+			stats: {}
+		};
 		var data = base;
 
 		var format = function() {
