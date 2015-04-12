@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-var qs 			= require('querystring');
 var request 	= require('request');
 var debug	= {
 	general: 	require('debug')('urf:scripts:parse:api:general'),
@@ -15,19 +14,7 @@ var moment  	= require('moment');
 var JSONStream  = require('JSONStream');
 var argv 		= require('yargs').argv;
 var Bottleneck 	= require('bottleneck');
-
-var ENDPOINTS = (function() {
-	var config = {
-		urf: 'https://euw.api.pvp.net/api/lol/euw/v4.1/game/ids',
-		match: 'https://euw.api.pvp.net/api/lol/euw/v2.2/match/'
-	};
-	var grabEndpoint = function(endpoint) {
-		return config[endpoint];
-	};
-	return {
-		get: grabEndpoint
-	};
-})();
+var ENDPOINTS   = require('./endpoints.js');
 
 var lolApi = function(config) {
 	var api = (function() {
@@ -108,12 +95,9 @@ var lolApi = function(config) {
 			debug.general('Converted finish to: '+config.finish);
 			limiter = new Bottleneck(1, 1000);
 		};
-		var buildUrl = function(url, args) {
-			return url + '?' + qs.stringify(args);
-		};
 		var streamUrfGames = function(timestamp, operator, callback) {
 			var requestConfig = {
-				url: buildUrl(ENDPOINTS.get('urf'), { beginDate: timestamp, api_key: config.apiKey })
+				url: ENDPOINTS.get('urf', { beginDate: timestamp, api_key: config.apiKey })
 			};
 			debug.games('Retrieving t:'+timestamp+' via '+JSON.stringify(requestConfig));
 			return operator(request(requestConfig).on('end', callback));
@@ -121,7 +105,7 @@ var lolApi = function(config) {
 		var streamGameStats = function(match, operator, callback) {
 			debug.stats('Getting stats for match: '+match);
 			var requestConfig = {
-					url: buildUrl(ENDPOINTS.get('match') + match.toString(), { includeTimeline: false, api_key: config.apiKey })
+				url: ENDPOINTS.get('match', { includeTimeline: false, api_key: config.apiKey }, match.toString())
 			};
 			debug.stats('Retrieving m:'+match+' via '+JSON.stringify(requestConfig));
 			return operator(request(requestConfig).on('end', callback));
@@ -151,7 +135,7 @@ var lolApi = function(config) {
 			var promiseList = [];
 
 			
-			process.stdout.write("[");
+			process.stdout.write('[');
 			//loop through each interval
 			_.each(interval, function(time) {
 				//set up a promise for when each game has completed streaming
@@ -203,7 +187,7 @@ var lolApi = function(config) {
 
 			requestQueue.start();
 			Q.allSettled(promiseList).then(function() {
-				process.stdout.write("]");
+				process.stdout.write(']');
 				debug.info('Completed all ' + interval.length + ' available intervals');
 				requestQueue.stop();
 			});

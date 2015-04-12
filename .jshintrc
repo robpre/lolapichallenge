@@ -11,6 +11,7 @@
 	"eqnull": true,
 	"trailing": true,
 	"browser": true,
+	"unused": true,
 	"quotmark": true,
 	"node": true,
 	"globals": {
