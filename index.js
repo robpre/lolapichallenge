@@ -12,6 +12,7 @@ var baseDir = __dirname + '/';
 var port = parseInt(process.env.PORT, 10) || 9001;
 // var API_KEY = process.env.API_KEY;
 var MONGO_URL = process.env.MONGO_URL;
+var SESSION_SECRET = process.env.SESSION_SECRET;
 
 // fetch build scripts
 var scripts = {
@@ -38,7 +39,7 @@ function Urf() {
 	// make sure we use the express server as part of the app
 	this.app = new http.Server(expressApp);
 	// inject sockets
-	this.io = socketServer(this.app, MONGO_URL);
+	this.io = socketServer(this.app, MONGO_URL, SESSION_SECRET);
 
 	return this;
 }

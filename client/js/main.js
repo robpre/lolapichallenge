@@ -3,7 +3,14 @@ var io = require('./socket.js');
 
 console.log('loaded!');
 
-// deps
-angular.module('Urf')
-.directives('example', require('./directives/example.js'));
+var socket = io();
+
+socket.on('logged in', function() {
+	console.log('logged in!');
+});
+socket.on('logged out', function() {
+	console.log('logged out!');
+});
+
+window.socket = socket;
 
