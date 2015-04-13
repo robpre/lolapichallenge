@@ -1,5 +1,4 @@
 #!/usr/bin/env node
-var qs 			= require('querystring');
 var request 	= require('request');
 var debug	= {
 	general: 	require('debug')('urf:scripts:parse:api:general'),
@@ -9,25 +8,12 @@ var debug	= {
 	info:		require('debug')('urf:scripts:parse:api:info'),
 };
 var _ 			= require('lodash');
-var util 		= require('util');
 var Q 			= require('q');
 var moment  	= require('moment');
 var JSONStream  = require('JSONStream');
 var argv 		= require('yargs').argv;
 var Bottleneck 	= require('bottleneck');
-
-var ENDPOINTS = (function() {
-	var config = {
-		urf: 'https://euw.api.pvp.net/api/lol/euw/v4.1/game/ids',
-		match: 'https://euw.api.pvp.net/api/lol/euw/v2.2/match/'
-	};
-	var grabEndpoint = function(endpoint) {
-		return config[endpoint];
-	};
-	return {
-		get: grabEndpoint
-	};
-})();
+var ENDPOINTS   = require('./endpoints.js');
 
 var lolApi = function(config) {
 	var api = (function() {
@@ -108,12 +94,9 @@ var lolApi = function(config) {
 			debug.general('Converted finish to: '+config.finish);
 			limiter = new Bottleneck(1, 1000);
 		};
-		var buildUrl = function(url, args) {
-			return url + '?' + qs.stringify(args);
-		};
 		var streamUrfGames = function(timestamp, operator, callback) {
 			var requestConfig = {
-				url: buildUrl(ENDPOINTS.get('urf'), { beginDate: timestamp, api_key: config.apiKey })
+				url: ENDPOINTS.get('urf', { beginDate: timestamp, api_key: config.apiKey })
 			};
 			debug.games('Retrieving t:'+timestamp+' via '+JSON.stringify(requestConfig));
 			return operator(request(requestConfig).on('end', callback));
@@ -121,7 +104,7 @@ var lolApi = function(config) {
 		var streamGameStats = function(match, operator, callback) {
 			debug.stats('Getting stats for match: '+match);
 			var requestConfig = {
-					url: buildUrl(ENDPOINTS.get('match') + match.toString(), { includeTimeline: false, api_key: config.apiKey })
+				url: ENDPOINTS.get('match', { includeTimeline: false, api_key: config.apiKey }, match.toString())
 			};
 			debug.stats('Retrieving m:'+match+' via '+JSON.stringify(requestConfig));
 			return operator(request(requestConfig).on('end', callback));
@@ -140,6 +123,18 @@ var lolApi = function(config) {
 			debug.general('Collected intervals: '+JSON.stringify(stamps, null, 1));
 			return stamps;
 		};
+		var handleGameObj = function(match) {
+			var matchStats = _.omit(match, 'participants', 'teams');
+			var teamData = _.indexBy(match.teams, 'teamId');
+			var players = match.participants;
+			debug.stats('Picked up participants block length: '+players.length);
+			_.each(players, function(stats) {
+				//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
+				stats.matchData = matchStats;
+				stats.teams = teamData;
+				process.stdout.write(JSON.stringify(stats) + ',');
+			});
+		};
 
 		var findStats = function() {
 			// build intervals of 5 minutes
@@ -150,8 +145,7 @@ var lolApi = function(config) {
 			};
 			var promiseList = [];
 
-			
-			process.stdout.write("[");
+			process.stdout.write('[');
 			//loop through each interval
 			_.each(interval, function(time) {
 				//set up a promise for when each game has completed streaming
@@ -167,22 +161,20 @@ var lolApi = function(config) {
 							//set up a promise for when each stat has completed streaming
 							var statPromise = Q.defer();
 							//send the limiter a stream function with an id parameter, stream processing function and a completion callback
-							requestQueue.force(function() { 
+							requestQueue.force(function() {
 								limiter.submit(streamGameStats, id, function(statStream) {
 									//this function wraps the request (stream)
 									//here we are chunking up the stream into JSON
-									statStream.pipe(JSONStream.parse(['participants'], function(players) {
-										debug.stats('Picked up participants block length: '+players.length);
-										_.each(players, function(stats) {
-											//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
-											process.stdout.write(JSON.stringify(stats) + ',');
-											// pipe out each stat here
-											processStats.stats++;
-											//tell some nice stats
+									var obj = {};
+									statStream
+										// we are essentially using json stream to validate the input
+										.pipe(JSONStream.parse('*', function(data, keyArr) {
+											var key = keyArr[0];
+											obj[key] = data;
+										})).on('end', function() {
+											handleGameObj(obj);
+											debug.info('Completed '+processStats.games+' games, '+ processStats.stats++ +' stats');
 										});
-										debug.info('Completed '+processStats.games+' games, '+processStats.stats+' stats');
-										return null;
-									}));
 								}, function() {
 									//promise complete	
 									statPromise.resolve();
@@ -203,7 +195,7 @@ var lolApi = function(config) {
 
 			requestQueue.start();
 			Q.allSettled(promiseList).then(function() {
-				process.stdout.write("]");
+				process.stdout.write(']');
 				debug.info('Completed all ' + interval.length + ' available intervals');
 				requestQueue.stop();
 			});
