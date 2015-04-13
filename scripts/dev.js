@@ -22,7 +22,7 @@ function listenForFileChanges() {
 				.catch(error);
 		});
 	});
-	gaze(['client/**/*.css', 'client/**/*.html'], function(err, watcher) {
+	gaze(['client/**/*.scss', 'client/**/*.html'], function(err, watcher) {
 		if(err) {
 			return error(err);
 		}
