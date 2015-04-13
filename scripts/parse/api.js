@@ -92,7 +92,7 @@ var lolApi = function(config) {
 			debug.general('Converted start to: '+config.start);
 			config.finish = parseInt(moment(rootDate(config.finish, false)).format('X'));
 			debug.general('Converted finish to: '+config.finish);
-			limiter = new Bottleneck(1, 1000);
+			limiter = new Bottleneck(1, 1100);
 		};
 		var streamUrfGames = function(timestamp, operator, callback) {
 			var requestConfig = {
@@ -101,13 +101,13 @@ var lolApi = function(config) {
 			debug.games('Retrieving t:'+timestamp+' via '+JSON.stringify(requestConfig));
 			return operator(request(requestConfig).on('end', callback));
 		};
-		var streamGameStats = function(match, operator, callback) {
+		var streamGameStats = function(match, operator) {
 			debug.stats('Getting stats for match: '+match);
 			var requestConfig = {
 				url: ENDPOINTS.get('match', { includeTimeline: false, api_key: config.apiKey }, match.toString())
 			};
 			debug.stats('Retrieving m:'+match+' via '+JSON.stringify(requestConfig));
-			return operator(request(requestConfig).on('end', callback));
+			return operator(request(requestConfig));
 		};
 
 		var buildInterval = function() {
@@ -127,6 +127,10 @@ var lolApi = function(config) {
 			var matchStats = _.omit(match, 'participants', 'teams');
 			var teamData = _.indexBy(match.teams, 'teamId');
 			var players = match.participants;
+			if(!players) {
+				debug.stats(JSON.stringify(match));
+				return process.stdout.write(JSON.stringify({broken: true}) + ',');
+			}
 			debug.stats('Picked up participants block length: '+players.length);
 			_.each(players, function(stats) {
 				//each stat is now pumped out to STDOUT where it will be handled by subsequent processing scripts
@@ -173,11 +177,9 @@ var lolApi = function(config) {
 											obj[key] = data;
 										})).on('end', function() {
 											handleGameObj(obj);
+											statPromise.resolve();
 											debug.info('Completed '+processStats.games+' games, '+ processStats.stats++ +' stats');
 										});
-								}, function() {
-									//promise complete	
-									statPromise.resolve();
 								});
 							});
 							processStats.games++;
