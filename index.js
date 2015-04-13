@@ -1,16 +1,17 @@
 // deps
 var express = require('express');
-var fs = require('fs');
 var Q = require('q');
 var debug = require('debug')('urf:index');
 var que = require('./lib/que');
-var server = require('./server');
+var socketServer = require('./server');
 var clientServer = require('./server/client.js');
+var http = require('http');
 
 // setup some useful vars
 var baseDir = __dirname + '/';
 var port = parseInt(process.env.PORT, 10) || 9001;
-var key = process.env.API_KEY;
+// var API_KEY = process.env.API_KEY;
+var MONGO_URL = process.env.MONGO_URL;
 
 // fetch build scripts
 var scripts = {
@@ -29,12 +30,15 @@ function Urf() {
 	if(!(this instanceof Urf)) {
 		return new Urf();
 	}
-	this.app = express();
+	var expressApp = express();
 	this.client = clientServer(baseDir);
-	this.api = server(key);
 
-	this.app.use('/', this.client);
-	this.app.use('/api', this.api);
+	// use express to server static files
+	expressApp.use('/', this.client);
+	// make sure we use the express server as part of the app
+	this.app = new http.Server(expressApp);
+	// inject sockets
+	this.io = socketServer(this.app, MONGO_URL);
 
 	return this;
 }
@@ -52,7 +56,7 @@ Urf.prototype.stop = function stop() {
 	debug('Running stop()');
 	var activeServer = this.active;
 	this.active = null;
-	return Q.Promise(function(resolve, reject) {
+	return Q.Promise(function(resolve) {
 		if(activeServer) {
 			activeServer.close(function() {
 				debug('Stopping server..');
