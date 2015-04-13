@@ -77,9 +77,6 @@ module.exports = function(basePath/*, globs*/) {
 		srcGlob: 'client/**/*.html',
 		dest: 'public/'
 	}, {
-		srcGlob: 'client/**/*.+(jpeg|jpg|png)',
-		dest: 'public/'
-	}, {
 		srcGlob: 'client/**/*.scss',
 		dest: 'public/',
 		transform: function() {
