@@ -1,18 +1,56 @@
-#navbar {
-  width: 80%;
-  height: 23px;
+$primaryBackgroundColour: #090c12;
+$primaryColour: #192335;
+$highlightPrimaryColour: #163a65;
+$altColour: #d75000;
+$muteColour: #252a34;
+
+body {
+	background-color: $primaryBackgroundColour;	
 }
 
-#navbar ul {
-  list-style-type: none;
+.navbar, #navbar, .navbar-urf {
+	height: 85px;
+	background-color: $primaryColour;
+}
+.navbar {
+	box-shadow:         inset 0 0 33px #000000;
 }
 
-h1 {color: green;}
+.play-container {
+	width:119px;
+	margin: 0px auto;
+	padding:10px 0px 0px 0px;
+	.btn-play {
+		padding: 19px 38px;
+		background: $altColour;
+		background: linear-gradient(0deg, darken($altColour, 15) 30%, $altColour 70%);
+		color: white;
+		text-align:center;
+		font-size: 21px;
+		line-height: 1;
+		border-color: darken($altColour, 15);
+		border-radius: 7px;
+		text-shadow: 1px 1px 0px rgba(30, 30, 30, 0.8);
+	}
+	.btn-play:hover, .btn-play:active {
+		cursor: pointer;
+		background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
+	}
+}
 
-#navbar li {
-  float: left;
-
-  a {
-    font-weight: bold;
-  }
+.card {
+	position:relative;
+	width:340px;
+	height:520px;
+	box-shadow:         inset 0 0 33px #000000;
+	.stats {
+		color:white;
+		width:100%;
+		height:230px;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		background-color:rgba(25, 25, 25, 0.75);
+		box-shadow: inset 0 0 33px #000000;
+	}
 }
