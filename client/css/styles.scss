@@ -1,18 +1,18 @@
-#navbar {
-  width: 80%;
-  height: 23px;
-}
-
-#navbar ul {
-  list-style-type: none;
-}
-
-h1 {color: green;}
-
-#navbar li {
-  float: left;
-
-  a {
-    font-weight: bold;
-  }
-}
+.card {
+	position:relative;
+	width:340px;
+	height:520px;
+	-moz-box-shadow:    inset 0 0 33px #000000;
+	-webkit-box-shadow: inset 0 0 33px #000000;
+	box-shadow:         inset 0 0 33px #000000;
+	.stats {
+		color:white;
+		width:100%;
+		height:230px;
+		position: absolute;
+		bottom: 0;
+		left: 0;
+		background-color:rgba(25, 25, 25, 0.75);
+		box-shadow: inset 0 0 33px #000000;
+	}
+};

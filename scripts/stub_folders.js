@@ -24,6 +24,15 @@ module.exports = function(path) {
 			css.resolve();
 		}
 	});
+	mkdirp(path + 'public/templates/directives', function(err) {
+		if( err ) {
+			debug('Failed to make public/templates/directives!', err);
+			css.reject();
+		} else {
+			debug('Success! created public/templates/directives!');
+			css.resolve();
+		}
+	});
 
 	return Q.all([js.promise, css.promise]);
 };
