@@ -32,3 +32,4 @@ socket.on('logged out', function() {
 });
 
 window.socket = socket;
+window.io = io;

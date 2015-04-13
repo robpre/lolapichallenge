@@ -32,10 +32,11 @@ DB.prototype.addUser = function(username, cb) {
 			.insert({
 				username: username
 			}, function(err, userObj) {
-				if(err) {
+				if(err || !userObj) {
 					cb(err);
-					return debug(err);
+					return debug(err || 'failed creating user');
 				}
+				debug('add user', arguments);
 				cb(null, userObj);
 			});
 	} else {
@@ -46,13 +47,14 @@ DB.prototype.addUser = function(username, cb) {
 DB.prototype.login = function(username, cb) {
 	if(this.db) {
 		var self = this;
-		this.db.findOne({username: username}, function(err, doc) {
-			if(err) {
-				debug(err);
-				return self.addUser(username, cb);
-			}
-			cb(null, doc);
-		});
+		this.db.collection('users')
+			.findOne({username: username}, function(err, userObj) {
+				if(err || !userObj) {
+					debug(err || 'creating user');
+					return self.addUser(username, cb);
+				}
+				cb(null, userObj);
+			});
 	} else {
 		debug('!!Error!! no db connection');
 	}

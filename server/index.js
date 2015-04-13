@@ -5,25 +5,42 @@ var MongoStore = require('connect-mongo')(session);
 
 var DB = require('./db.js');
 
+function wrapExpressMiddlware(fn) {
+	return function(socket, next) {
+		fn(socket.request, socket.request.res, next);
+	};
+}
+
 module.exports = function(httpInst, mongoURL, secret/*, apiKey*/) {
 	var io = socketIO(httpInst, { serveClient: false });
 	// var securedIO = io;
 	var database = new DB(mongoURL);
 
 	database.connect(function(err, db) {
+		if(err) {
+			return debug('ERROR CONNECTING TO MONGODB', err);
+		}
 		// create our session handler
-		var sessionManagerMiddleware = session({
+		var sessionManagerMiddleware = wrapExpressMiddlware(session({
 			secret: secret,
-			resave: false,
-			saveUninitialized: false,
+			resave: true,
+			saveUninitialized: true,
 			store: new MongoStore({
 				db: db
 			})
-		});
+		}));
 		// inject it
-		var sessionedSocket = io.use(function(socket, next) {
-			sessionManagerMiddleware(socket.request, socket.request.res, next);
-		});
+		var sessionedSocket = io.use(sessionManagerMiddleware);
+		// secure namespaced socket
+		var secureSessionedSocket = io.of('/secure');
+		secureSessionedSocket.use(sessionManagerMiddleware)
+			.use(function(socket, next) {
+				// Super simple check
+				debug('secure sess', socket.request.session);
+				if(socket.request.session.user) {
+					next();
+				}
+			});
 
 		// now our sockets have sessions
 		sessionedSocket.on('connection', function(socket) {
@@ -36,6 +53,7 @@ module.exports = function(httpInst, mongoURL, secret/*, apiKey*/) {
 						return socket.emit('error', err);
 					}
 					socket.request.session.user = user;
+					debug('logged in with user', user);
 					socket.emit('logged in');
 				});
 			});
@@ -45,15 +63,9 @@ module.exports = function(httpInst, mongoURL, secret/*, apiKey*/) {
 			});
 		});
 
-		var secureSessionedSocket = sessionedSocket.use(function(socket, next) {
-			// Super simple check
-			if(socket.request.session.user) {
-				next();
-			}
-		});
 		// now we have our secure sessioned sockets
 		secureSessionedSocket.on('connection', function(socket) {
-			socket.emit('logged in! ', socket.request.session.user);
+			debug('logged in !', socket.request.session.user);
 		});
 
 	});
