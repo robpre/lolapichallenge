@@ -4,5 +4,5 @@ console.log('loaded!');
 
 // deps
 angular.module('Urf')
-.directives('example', require('./directives/exmaple.js'));
+.directives('example', require('./directives/example.js'));
 
