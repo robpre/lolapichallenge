@@ -5,7 +5,8 @@ module.exports = [function() {
 		scope: {
 			card: '='	
 		},
-		link: function(scope, element, attrs) {
+		link: function(scope) {
+			console.log(scope.card.champion.name);
 		}
 	};
 }];
