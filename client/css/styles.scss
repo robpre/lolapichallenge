@@ -18,6 +18,25 @@ html, body {
 .hide {
 	display: none !important;
 }
+.well {
+	border-color: $highlightPrimaryColour;
+	border-radius:0px;
+	background-color:$primaryBackgroundColour;
+}
+
+.urf-card-bank {
+	padding: 10px;
+}
+
+.urf-card-slot.blank {
+	box-shadow: inset 0 0 7px #000000;
+	border-color: black;
+	width:35px;
+	height:35px;
+	margin:5px 7px;
+	float:left;
+}
+
 .form-control:focus {
   box-shadow: none;
   border-color: darken($primaryBackgroundColour, 40);
@@ -38,16 +57,13 @@ form .form-group.urf-form-filter input {
 .navbar.navbar-hide {
 	display:none;
 }
-
 .urf-lobby {
 	margin-top:13px;
-
-	.table.filter>tbody>tr>td, .table.filter>tbody>tr>th, .table.filter>tfoot>tr>td, 
-	.table.filter>tfoot>tr>th, .table.filter>thead>tr>td, .table.filter>thead>tr>th {
-		//fuck it
-		border-color: $muteColour !important;
-		color: $muteColour;
-	}
+//	.table.filter>tbody>tr>td, .table.filter>tbody>tr>th, .table.filter>tfoot>tr>td, 
+//	.table.filter>tfoot>tr>th, .table.filter>thead>tr>td, .table.filter>thead>tr>th {
+//		border-color: $muteColour !important;
+//		color: $muteColour;
+//	} 
 }
 .urf-title {
 	text-align:center;
@@ -101,13 +117,41 @@ form .form-group.urf-form-filter input {
 }
 
 .card {
+	.default {
+		width:340px;
+		height:520px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+	}
+	.square {
+		width:32px;
+		height:32px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+	}
+	.thin {
+		width: 100%;
+		height:30px;
+		margin:5px 0px;
+		padding:0px 5px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+		.name-plate {
+			background-color:rgba(25, 25, 25, 0.75);
+			font-weight:bold;
+			text-align:center;
+			line-height:30px;
+			color:white;
+		}
+	}
+}
+
+.oldcard {
 	position:relative;
-	width:340px;
-	height:520px;
 	box-shadow:         inset 0 0 33px #000000;
-	background-size:cover;
-	background-repeat:no-repeat;
-	background-position:center center;
 	background-color: $primaryBackgroundColour;
 	.stats {
 		color:white;
