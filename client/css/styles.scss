@@ -1,7 +1,7 @@
 $primaryBackgroundColour: #090c12;
 $primaryTextColour: #cdcdcd;
 $primaryColour: #192335;
-$highlightPrimaryColour: #163a65;
+$highlightPrimaryColour: #020D1A;
 $altColour: #d75000;
 $muteColour: #252a34;
 
@@ -19,10 +19,25 @@ html, body {
 	background-color: $primaryColour;
 }
 .navbar {
-	box-shadow:         inset 0 0 33px #000000;
+	box-shadow: inset 0 0 33px #000000;
 }
 .navbar.navbar-hide {
 	display:none;
+}
+
+.urf-title {
+	margin-bottom:8px;
+	text-align:center;
+}
+
+.urf-main {
+	margin-top:100px;
+}
+.urf-container {
+	background-color: $highlightPrimaryColour;
+	border-radius:6.77px;
+	box-shadow: 0px 0px 41px 0px darken($highlightPrimaryColour, 85);
+	padding:17px 12px 17px 12px;
 }
 
 .play-container {
@@ -46,10 +61,6 @@ html, body {
 		background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
 	}
 }
-
-.menu-container {
-	padding-top: 100px;
-};
 
 .card {
 	position:relative;
