@@ -36,7 +36,6 @@ DB.prototype.addUser = function(username, cb) {
 					cb(err);
 					return debug(err || 'failed creating user');
 				}
-				debug('add user', arguments);
 				cb(null, userObj);
 			});
 	} else {

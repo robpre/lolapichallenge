@@ -32,15 +32,15 @@ module.exports = function(httpInst, mongoURL, secret/*, apiKey*/) {
 		// inject it
 		var sessionedSocket = io.use(sessionManagerMiddleware);
 		// secure namespaced socket
-		var secureSessionedSocket = io.of('/secure');
-		secureSessionedSocket.use(sessionManagerMiddleware)
-			.use(function(socket, next) {
-				// Super simple check
-				debug('secure sess', socket.request.session);
-				if(socket.request.session.user) {
-					next();
-				}
-			});
+		var secureSessionedSocket = io
+			.of('/secure')
+				.use(sessionManagerMiddleware)
+				.use(function(socket, next) {
+					// Super simple check
+					if(socket.request.session.user) {
+						next();
+					}
+				});
 
 		// now our sockets have sessions
 		sessionedSocket.on('connection', function(socket) {
@@ -65,7 +65,7 @@ module.exports = function(httpInst, mongoURL, secret/*, apiKey*/) {
 
 		// now we have our secure sessioned sockets
 		secureSessionedSocket.on('connection', function(socket) {
-			debug('logged in !', socket.request.session.user);
+			debug('user logged in!', socket.request.session.user);
 		});
 
 	});
