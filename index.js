@@ -1,11 +1,8 @@
 // deps
-var express = require('express');
 var Q = require('q');
 var debug = require('debug')('urf:index');
 var que = require('./lib/que');
-var socketServer = require('./server');
-var clientServer = require('./server/client.js');
-var http = require('http');
+var Server = require('./server');
 
 // setup some useful vars
 var baseDir = __dirname + '/';
@@ -13,6 +10,7 @@ var port = parseInt(process.env.PORT, 10) || 9001;
 // var API_KEY = process.env.API_KEY;
 var MONGO_URL = process.env.MONGO_URL;
 var SESSION_SECRET = process.env.SESSION_SECRET;
+var SALT = process.env.URF_SALT;
 
 // fetch build scripts
 var scripts = {
@@ -31,41 +29,27 @@ function Urf() {
 	if(!(this instanceof Urf)) {
 		return new Urf();
 	}
-	var expressApp = express();
-	this.client = clientServer(baseDir);
 
-	// use express to server static files
-	expressApp.use('/', this.client);
-	// make sure we use the express server as part of the app
-	this.app = new http.Server(expressApp);
-	// inject sockets
-	this.io = socketServer(this.app, MONGO_URL, SESSION_SECRET);
+	this.app = new Server(MONGO_URL, SESSION_SECRET, baseDir, SALT);
 
 	return this;
 }
 
 Urf.prototype.listen = function listen() {
-	if(!this.active) {
-		debug('Running listen()');
-		this.active = this.app.listen(port, function() {
-			debug('Listening on port: ' + port);
-		});
-	}
+	debug('Running listen()');
+	this.app.listen(port, function() {
+		debug('Listening on port: ' + port);
+	});
 };
 
 Urf.prototype.stop = function stop() {
 	debug('Running stop()');
-	var activeServer = this.active;
-	this.active = null;
+	var active = this.app;
 	return Q.Promise(function(resolve) {
-		if(activeServer) {
-			activeServer.close(function() {
-				debug('Stopping server..');
-				resolve.apply(null, arguments);
-			});
-		} else {
-			resolve('Server not running!');
-		}
+		active.close(function() {
+			debug('Stopping server..');
+			resolve.apply(null, arguments);
+		});
 	});
 };
 
