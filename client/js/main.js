@@ -67,7 +67,7 @@ angular.module('urf', [require('angular-route')])
 			}
 		});
 	}])
-	.run(['$rootScope', '$window', 'urfUtility', function($rootScope, $window, urfUtility) {
+	.run(['$rootScope', '$window', function($rootScope, $window) {
 		$rootScope.$on('routeChangeSuccess', function(evt, next, current) {
 			var windowLocation = (window.pageYOffset || document.documentElement.scrollTop);
 			if(windowLocation !== 0) {

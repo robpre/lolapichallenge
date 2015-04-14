@@ -5,10 +5,11 @@
 	<meta name="viewport" value="width=device-width">
 	<title>Urf Ninja</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
+	<link href='http://fonts.googleapis.com/css?family=Galdeano' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-	<nav class="navbar navbar-urf navbar-fixed-top" ng-class="{'navbar-hide': !enabled}" ng-controller="urfNav">
+	<nav class="navbar navbar-urf navbar-fixed-top" ng-class="{'navbar-hide': !enabled}" ng-controller="urfNav" ng-cloak>
 		<div class="container">
 			<div onclick="login('rob')" class="btn">login</div>
 			<div onclick="logout()" class="btn">logout</div>
