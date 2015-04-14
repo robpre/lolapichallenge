@@ -9,12 +9,12 @@
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
-	<nav class="navbar navbar-urf navbar-fixed-top" ng-class="{'navbar-hide': !enabled}" ng-controller="urfNav" ng-cloak>
+	<nav class="navbar navbar-urf navbar-fixed-top ng-cloak" ng-class="{'navbar-hide': !enabled}" ng-controller="urfNav" ng-cloak>
 		<div class="container">
 			<div onclick="login('rob')" class="btn">login</div>
 			<div onclick="logout()" class="btn">logout</div>
 			<div class="play-container">
-				<div class="btn btn-play">Play</div>
+				<div class="btn btn-play" style="padding:19px 38px;">Play</div>
 			</div>
 		</div>
 	</nav>
