@@ -40,12 +40,18 @@ Server.prototype.listen = function(port, cb) {
 
 		var sessionedSocket = new SessionSockets(io, sesh.store, sesh.cookieParser);
 
-		sessionedSocket.on('connection', function(err, socket, session) {
-			if(err) {
-				return debug('Error setting up session! ', err);
-			}
-			debug(session);
-		});
+		sessionedSocket
+			.on('connection', function(err, socket, session) {
+				if(err) {
+					return debug('Error setting up session! ', err);
+				}
+				if(!session.loggedInUser) {
+					debug('user not authed, closing socket');
+					return socket.disconnect();
+				}
+				debug(session.loggedInUser);
+				debug(session);
+			});
 
 		urfServer.socket = sessionedSocket;
 		urfServer.httpInst = httpInst;

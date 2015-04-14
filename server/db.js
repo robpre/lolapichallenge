@@ -3,16 +3,20 @@ var debug = require('debug')('urf:server:db');
 var SHA1 = require('crypto-js/sha1');
 var _ = require('lodash');
 
-// MongoClient.connect(MONGO_URL, function(err, db) {});
+function sharify(str) {
+	return SHA1(str).toString();
+}
 
+// MongoClient.connect(MONGO_URL, function(err, db) {});
 function DB(mongoURL, salt) {
 	this.mongoURL = mongoURL;
 	this.passwordSalt = salt;
 	return this;
 }
 
+
 DB.prototype.connect = function(cb) {
-	debug('connecting to ' + this.mongoURL);
+	debug('connecting to mongo');
 	if(!this.db) {
 		var self = this;
 		MongoClient.connect(this.mongoURL, function(err, db) {
@@ -30,7 +34,7 @@ DB.prototype.connect = function(cb) {
 };
 
 DB.prototype.encryptPasssword = function(password) {
-	return SHA1(SHA1(password) + this.passwordSalt);
+	return sharify(sharify(password) + this.passwordSalt);
 };
 
 DB.prototype.addUser = function(username, password, cb) {
@@ -74,8 +78,8 @@ DB.prototype.login = function(username, password, cb) {
 						cb(err, userObj, true);
 					});
 				} else {
-					if(!self.auth(userObj)) {
-						return cb('no such user');
+					if(!self.auth(userObj, password)) {
+						return cb('password missmatch');
 					} else {
 						// success! found the user
 						// pass false to the cb so we it knows it's not a fresh user
