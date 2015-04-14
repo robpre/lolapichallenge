@@ -1,3 +1,3 @@
 module.exports = ['$scope', function($scope) {
-	console.log('Hello world');
+	console.log('Am I not in the lobby');
 }];
