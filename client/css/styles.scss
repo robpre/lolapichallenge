@@ -4,7 +4,8 @@ $highlightPrimaryColour: #163a65;
 $altColour: #d75000;
 $muteColour: #252a34;
 
-body {
+html, body {
+	height:100%;
 	background-color: $primaryBackgroundColour;	
 }
 
@@ -38,11 +39,19 @@ body {
 	}
 }
 
+.menu-container {
+	padding-top: 100px;
+};
+
 .card {
 	position:relative;
 	width:340px;
 	height:520px;
 	box-shadow:         inset 0 0 33px #000000;
+	background-size:cover;
+	background-repeat:no-repeat;
+	background-position:center center;
+	background-color: $primaryBackgroundColour;
 	.stats {
 		color:white;
 		width:100%;

@@ -6,7 +6,7 @@ angular.module('urf', [require('angular-route')])
 	.controller('urfRoot', require('./controllers/root.js'))
 	.directive('urfCard', require('./directives/urf-card.js'))
 	.config(['$routeProvider', function($routeProvider) {
-		$routeProvider.when('/shit', {
+		$routeProvider.when('/', {
 			templateUrl: 'templates/root.html',
 			controller: 'urfRoot'
 		});
