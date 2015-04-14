@@ -1,4 +1,4 @@
-module.exports = [function() {
+module.exports = function() {
 	return {
 		templateUrl: 'templates/directives/urf-card.html',
 		restrict: 'E',
@@ -9,4 +9,4 @@ module.exports = [function() {
 			console.log(scope.card.champion.name);
 		}
 	};
-}];
+};
