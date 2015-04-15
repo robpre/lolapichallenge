@@ -1,64 +1,153 @@
+.ng-cloak {
+	display: none !important;
+}
 $primaryBackgroundColour: #090c12;
 $primaryTextColour: #cdcdcd;
 $primaryColour: #192335;
-$highlightPrimaryColour: #163a65;
+$highlightPrimaryColour: #020D1A;
 $altColour: #d75000;
 $muteColour: #252a34;
 
 h1, h2, h3, h4, h5, h6, body, p, span {
 	color: $primaryTextColour;
 }
-
 html, body {
 	height:100%;
 	background-color: $primaryBackgroundColour;	
 }
+.hide {
+	display: none !important;
+}
+.well {
+	border-color: $highlightPrimaryColour;
+	border-radius:0px;
+	background-color:$primaryBackgroundColour;
+}
 
+.urf-card-slot.blank {
+	box-shadow: inset 0 0 7px #000000;
+	border-color: black;
+	width:35px;
+	height:35px;
+	margin:5px 7px;
+	float:left;
+}
+
+.form-control:focus {
+  box-shadow: none;
+  border-color: darken($primaryBackgroundColour, 40);
+  box-shadow: inset 0 3px 8px rgba(0,0,0,.24);
+}
+form .form-group input {
+	background-color: $primaryTextColour;
+	border-color: black;
+}
+form .form-group.urf-form-filter input {
+	background-color: $primaryBackgroundColour;
+	border-color: $highlightPrimaryColour;
+}
 .navbar, #navbar, .navbar-urf {
 	height: 85px;
-	background-color: $primaryColour;
-}
-.navbar {
-	box-shadow:         inset 0 0 33px #000000;
+	background-color: darken($highlightPrimaryColour, 30);
 }
 .navbar.navbar-hide {
 	display:none;
+}
+.urf-lobby {
+	margin-top:13px;
+//	.table.filter>tbody>tr>td, .table.filter>tbody>tr>th, .table.filter>tfoot>tr>td, 
+//	.table.filter>tfoot>tr>th, .table.filter>thead>tr>td, .table.filter>thead>tr>th {
+//		border-color: $muteColour !important;
+//		color: $muteColour;
+//	} 
+}
+.urf-title {
+	text-align:center;
+	h1.logo {
+		color: #d8dd02;
+		text-shadow: 2px 2px 0px rgb(0, 0, 0);
+		font-family: 'Galdeano', sans-serif;
+		font-size:79px;
+		line-height:0.7;
+		word-spacing:-5px;
+		letter-spacing:-1px;
+		span {
+			font-size:12px;
+		}
+	}
+	margin-bottom:34px;
+}
+.urf-main {
+	margin-top:100px;
+}
+.urf-container {
+	background-color: $highlightPrimaryColour;
+	box-shadow: 0px 0px 27px 0px darken($highlightPrimaryColour, 85);
+}
+.urf-form-login {
+	padding:17px;
+	margin-top:7px;
+}
+
+.btn-play {
+	color: $primaryTextColour;
+	background: $altColour;
+	background: linear-gradient(0deg, darken($altColour, 15) 30%, $altColour 70%);
+	text-align:center;
+	font-size: 17px;
+	line-height: 1;
+	border-color: darken($altColour, 15);
+	border-radius: 3px;
+	text-shadow: 1px 1px 0px rgba(30, 30, 30, 0.8);
+}
+.btn-play:hover, .btn-play:active {
+	color: white;
+	cursor: pointer;
+	background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
 }
 
 .play-container {
 	width:119px;
 	margin: 0px auto;
 	padding:10px 0px 0px 0px;
-	.btn-play {
-		padding: 19px 38px;
-		background: $altColour;
-		background: linear-gradient(0deg, darken($altColour, 15) 30%, $altColour 70%);
-		color: white;
-		text-align:center;
-		font-size: 21px;
-		line-height: 1;
-		border-color: darken($altColour, 15);
-		border-radius: 7px;
-		text-shadow: 1px 1px 0px rgba(30, 30, 30, 0.8);
+}
+
+.card {
+	.default {
+		width:340px;
+		height:520px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
 	}
-	.btn-play:hover, .btn-play:active {
-		cursor: pointer;
-		background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
+	.square {
+		width:32px;
+		height:32px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+	}
+	.thin {
+		width: 100%;
+		height:30px;
+		margin:5px 0px;
+		padding:0px 5px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+		.name-plate {
+			background-color:rgba(25, 25, 25, 0.75);
+			font-weight:bold;
+			text-align:center;
+			line-height:30px;
+			color:white;
+		}
 	}
 }
 
-.menu-container {
-	padding-top: 100px;
-};
-
-.card {
+.oldcard {
 	position:relative;
-	width:340px;
-	height:520px;
 	box-shadow:         inset 0 0 33px #000000;
-	background-size:cover;
-	background-repeat:no-repeat;
-	background-position:center center;
 	background-color: $primaryBackgroundColour;
 	.stats {
 		color:white;

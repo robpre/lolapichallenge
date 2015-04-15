@@ -1,4 +1,13 @@
-<div class="card" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{card.champion.name}}_0.jpg)">
-	<div class="stats">
+<div ng-if="card" ng-switch="render" class="card">
+	<div ng-switch-when="thin" class="thin" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{card.champion.name}}_0.jpg)"><div class="name-plate">{{card.champion.name}}</div>
 	</div>
+	<div ng-switch-when="square" class="square" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/{{card.champion.name}}_0.jpg)">
+	</div>
+	<div ng-switch-default class="default" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{card.champion.name}}_0.jpg)">
+		<div class="stats">
+		</div>
+	</div>
+</div>
+<div ng-if="!card" class="well urf-card-slot blank">
+	
 </div>

@@ -3,10 +3,10 @@ module.exports = function() {
 		templateUrl: 'templates/directives/urf-card.html',
 		restrict: 'E',
 		scope: {
-			card: '='	
+			card: '=',
+			render: '@'
 		},
-		link: function(scope) {
-			console.log(scope.card.champion.name);
+		link: function(scope, element, attrs) {
 		}
 	};
 };

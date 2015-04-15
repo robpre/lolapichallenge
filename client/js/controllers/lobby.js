@@ -1,3 +1,5 @@
+var lux = require('../../lux.json');
 module.exports = ['$scope', function($scope) {
-	console.log('Hello world');
+	$scope.card = lux;
+	console.log('Am I not in the lobby');
 }];
