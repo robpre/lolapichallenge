@@ -1,5 +1,7 @@
 var lux = require('../../lux.json');
-module.exports = ['$scope', function($scope) {
+module.exports = ['$scope', '$rootScope', function($scope, $rootScope) {
 	$scope.card = lux;
-	console.log('Am I not in the lobby');
+	$scope.addToDeck = function(card) {
+		$rootScope.$broadcast('urf.deck.add', card);
+	};
 }];
