@@ -86,7 +86,7 @@ angular.module('urf', [require('angular-route')])
 				});
 				// if we aren't currently somewhere open move us there
 				if(current && _.indexOf(openPaths, current) === -1) {
-					$location.assign(openPaths[0]);
+					$location.path(openPaths[0]);
 				} else {
 					// otherwise just stop going
 					evt.preventDefault();
