@@ -212,3 +212,36 @@ urf-card {
 	display: inline-block;
 	margin:auto auto;
 }
+[ng-controller="flash"] {
+	width:  100%;
+	display: flex;
+
+	span {
+		color: inherit;
+	}
+
+	> div {
+		min-width: 25%;
+		max-width: 50%;
+		margin: 0 auto;
+	}
+
+	.alert-danger {
+		.glyphicon:before {
+			// !
+			content: "\e101";
+		}
+	}
+	.alert-info {
+		.glyphicon:before {
+			// warning
+			content: "\e107";
+		}
+	}
+	.alert-success {
+		.glyphicon:before {
+			// star
+			content: "\e124";
+		}
+	}
+}

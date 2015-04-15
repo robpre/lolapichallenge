@@ -40,6 +40,12 @@
 			</div>
 		</div>
 	</nav>
+	<div class="ng-cloak" ng-controller="flash">
+		<div ng-if="message.text" class="alert {{message.type}}" role="alert">
+			<span class="glyphicon"></span>
+			<span>{{message.text}}</span>
+		</div>
+	</div>
 	<div ng-view></div>
 	<script src="js/bundle.js"></script>
 </body>

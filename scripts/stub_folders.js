@@ -20,6 +20,7 @@ module.exports = function(path) {
 	return Q.all([
 		createFolderPromise(path + 'public/js'),
 		createFolderPromise(path + 'public/css'),
-		createFolderPromise(path + 'public/templates/directives')
+		createFolderPromise(path + 'public/templates/directives'),
+		createFolderPromise(path + 'public/fonts')
 	]);
 };

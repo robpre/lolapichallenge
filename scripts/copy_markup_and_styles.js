@@ -89,6 +89,9 @@ module.exports = function(basePath/*, globs*/) {
 	}, {
 		srcGlob: 'node_modules/bootstrap/dist/css/bootstrap+(.min.css|.css.map)',
 		dest: 'public/css/'
+	}, {
+		srcGlob: 'node_modules/bootstrap/dist/fonts/glyphicons-halflings-regular.*',
+		dest: 'public/fonts'
 	}];
 	var opts = {
 		cwd: basePath
