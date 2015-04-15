@@ -3,7 +3,9 @@ var io = require('./socket.js');
 
 // deps
 angular.module('urf', [require('angular-route')])
+	.service('urfDeck', require('./services/deck.js'))
 	.controller('urfIndex', require('./controllers/index.js'))
+	.controller('urfDeckHandler', require('./controllers/deck.js'))
 	.controller('urfLobby', require('./controllers/lobby.js'))
 	.controller('urfGame', require('./controllers/game.js'))
   	.controller('urfNav', ['$scope', function($scope, $element) {

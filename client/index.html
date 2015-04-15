@@ -16,22 +16,8 @@
 					<h1 class="navLogo">Cards <span>of</span><br/>Legends</h1>
 				</div>
 				<div class="col-md-7">
-					<div class="urf-card-deck">
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
-						<urf-card render="square" tile="true" size="small"></urf-card>
+					<div ng-controller="urfDeckHandler" class="urf-card-deck">
+						<urf-card ng-repeat="(key, cardCopy) in handler.deck" render="square" card="cardCopy" tile="true" size="small"></urf-card>
 					</div>
 				</div>
 				<div class="col-md-3">

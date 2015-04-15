@@ -1,14 +1,14 @@
-<div ng-if="card" ng-switch="render" class="card" ng-class="{tiled: tile}">
-	<div ng-switch-when="thin" class="thin" ng-class="{small: size == 'small'}" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{card.champion.name}}_0.jpg)"><div class="name-plate">{{card.champion.name}}</div>
+<div ng-if="data.card" ng-switch="render" class="card" ng-class="{tiled: tile}">
+	<div ng-switch-when="thin" class="thin" ng-class="{small: size == 'small'}" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{data.card.champion.name}}_0.jpg)"><div class="name-plate">{{data.card.champion.name}}</div>
 	</div>
-	<div ng-switch-when="square" ng-class="{small: size == 'small'}" class="square" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/{{card.champion.name}}.png)">
+	<div ng-switch-when="square" ng-class="{small: size == 'small'}" class="square" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/{{data.card.champion.name}}.png)">
 	</div>
-	<div ng-switch-default class="default" ng-class="{small: size == 'small'}" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{card.champion.name}}_0.jpg)">
+	<div ng-switch-default class="default" ng-class="{small: size == 'small'}" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/img/champion/loading/{{data.card.champion.name}}_0.jpg)">
 		<div class="stats">
 		</div>
 	</div>
 </div>
-<div ng-if="!card" ng-switch="render" class="card" ng-class="{tiled: tile}">
+<div ng-if="!data.card" ng-switch="render" class="card" ng-class="{tiled: tile}">
 	<div ng-switch-when="thin" class="empty-thin" ng-class="{small: size == 'small'}">
 	</div>
 	<div ng-switch-when="square" class="empty-square" ng-class="{small: size == 'small'}">
