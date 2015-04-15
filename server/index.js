@@ -1,74 +1,70 @@
 var debug = require('debug')('urf:server:index');
 var socketIO = require('socket.io');
-var session = require('express-session');
-var MongoStore = require('connect-mongo')(session);
+var SessionSockets = require('session.socket.io');
+var http = require('http');
+var express = require('express');
 
+var clientFactory = require('./client.js');
+var sessionFactory = require('./session.js');
 var DB = require('./db.js');
 
-function wrapExpressMiddlware(fn) {
-	return function(socket, next) {
-		fn(socket.request, socket.request.res, next);
-	};
+function Server(mongoURL, secret, staticFileDir, salt) {
+	if(!mongoURL || !secret || !staticFileDir) {
+		return debug('CANT DO THAT WITHOUT mongoURL:' + mongoURL + ' || secret:' + secret + ' || staticFileDir:' + staticFileDir);
+	}
+	this.database = new DB(mongoURL, salt);
+	this.secret = secret;
+	this.staticFileDir = staticFileDir;
+	this.salt = salt;
+
+	return this;
 }
 
-module.exports = function(httpInst, mongoURL, secret/*, apiKey*/) {
-	var io = socketIO(httpInst, { serveClient: false });
-	// var securedIO = io;
-	var database = new DB(mongoURL);
+Server.prototype.listen = function(port, cb) {
+	var urfServer = this;
+	var database = this.database;
 
-	database.connect(function(err, db) {
+	this.database.connect(function(err, db) {
 		if(err) {
-			return debug('ERROR CONNECTING TO MONGODB', err);
+			debug('ERROR CONNECTING TO MONGODB', err);
+			return cb(err);
 		}
-		// create our session handler
-		var sessionManagerMiddleware = wrapExpressMiddlware(session({
-			secret: secret,
-			resave: true,
-			saveUninitialized: true,
-			store: new MongoStore({
-				db: db
-			})
-		}));
-		// inject it
-		var sessionedSocket = io.use(sessionManagerMiddleware);
-		// secure namespaced socket
-		var secureSessionedSocket = io
-			.of('/secure')
-				.use(sessionManagerMiddleware)
-				.use(function(socket, next) {
-					// Super simple check
-					if(socket.request.session.user) {
-						next();
-					}
-				});
 
-		// now our sockets have sessions
-		sessionedSocket.on('connection', function(socket) {
-			debug('user connected');
-			debug(socket.request.session);
-			socket.on('login', function(username) {
-				debug(username + ' requested login');
-				database.login(username, function(err, user) {
-					if(err) {
-						return socket.emit('error', err);
-					}
-					socket.request.session.user = user;
-					debug('logged in with user', user);
-					socket.emit('logged in');
-				});
+		var sesh = sessionFactory(db, urfServer.secret);
+
+		// instantiate our client using the expressSession and cookieParser from the factory
+		// so they are shared between the client and socket io
+		var client = clientFactory(urfServer.staticFileDir, sesh.expressSession, sesh.cookieParser, database);
+		var httpInst = http.Server(client);
+		var io = socketIO(httpInst, { serveClient: false });
+
+		var sessionedSocket = new SessionSockets(io, sesh.store, sesh.cookieParser);
+
+		sessionedSocket
+			.on('connection', function(err, socket, session) {
+				if(err) {
+					return debug('Error setting up session! ', err);
+				}
+				if(!session.loggedInUser) {
+					debug('user not authed, closing socket');
+					return socket.disconnect();
+				}
+				debug(session.loggedInUser);
+				debug(session);
 			});
-			socket.on('logout', function() {
-				socket.request.session.user = null;
-				socket.emit('logged out');
-			});
-		});
 
-		// now we have our secure sessioned sockets
-		secureSessionedSocket.on('connection', function(socket) {
-			debug('user logged in!', socket.request.session.user);
-		});
+		urfServer.socket = sessionedSocket;
+		urfServer.httpInst = httpInst;
 
+		httpInst.listen(port, cb);
 	});
-
-	return io;
 };
+
+Server.prototype.close = function(cb) {
+	this.database.close();
+	if(this.httpInst) {
+		this.httpInst.close(cb);
+	}
+};
+
+module.exports = Server;
