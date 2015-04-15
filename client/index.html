@@ -10,27 +10,32 @@
 </head>
 <body>
 	<nav class="navbar navbar-urf navbar-fixed-top ng-cloak urf-container" ng-class="{'navbar-hide': !enabled}" ng-controller="urfNav" ng-cloak>
-		<div class="container">
-			<div class="row">
-				<div class="col-md-10 col-md-offset-1 urf-card-bank">
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
-					<urf-card></urf-card>
+		<div class="container-fluid">
+			<div class="row nav-items">
+				<div class="col-md-2">
+					<h1 class="navLogo">Cards <span>of</span><br/>Legends</h1>
 				</div>
-				<div class="col-md-1">
-					
+				<div class="col-md-7">
+					<div class="urf-card-deck">
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+						<urf-card render="square" tile="true" size="small"></urf-card>
+					</div>
+				</div>
+				<div class="col-md-3">
+					<div class="btn btn-play btn-lg lobby-play">Play</div>	
 				</div>
 			</div>
 		</div>
