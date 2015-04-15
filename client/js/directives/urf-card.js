@@ -4,9 +4,14 @@ module.exports = function() {
 		restrict: 'E',
 		scope: {
 			card: '=',
-			render: '@'
+			render: '@',
+			tile: '@',
+			size: '@'
 		},
 		link: function(scope, element, attrs) {
+			if(!scope.size) {
+				scope.size = "regular";
+			} 
 		}
 	};
 };

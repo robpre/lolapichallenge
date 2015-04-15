@@ -1,12 +1,13 @@
 .ng-cloak {
 	display: none !important;
 }
-$primaryBackgroundColour: #090c12;
+$primaryBackgroundColour: #18243C;
 $primaryTextColour: #cdcdcd;
 $primaryColour: #192335;
-$highlightPrimaryColour: #020D1A;
+$highlightPrimaryColour: #122F52;
 $altColour: #d75000;
 $muteColour: #252a34;
+$navMargin: 14px;
 
 h1, h2, h3, h4, h5, h6, body, p, span {
 	color: $primaryTextColour;
@@ -18,19 +19,11 @@ html, body {
 .hide {
 	display: none !important;
 }
+
 .well {
 	border-color: $highlightPrimaryColour;
 	border-radius:0px;
 	background-color:$primaryBackgroundColour;
-}
-
-.urf-card-slot.blank {
-	box-shadow: inset 0 0 7px #000000;
-	border-color: black;
-	width:35px;
-	height:35px;
-	margin:5px 7px;
-	float:left;
 }
 
 .form-control:focus {
@@ -53,29 +46,67 @@ form .form-group.urf-form-filter input {
 .navbar.navbar-hide {
 	display:none;
 }
+.lobby-play {
+	float:left;
+}
+.nav-items>* {
+	margin-top: $navMargin;
+}
 .urf-lobby {
 	margin-top:13px;
-//	.table.filter>tbody>tr>td, .table.filter>tbody>tr>th, .table.filter>tfoot>tr>td, 
-//	.table.filter>tfoot>tr>th, .table.filter>thead>tr>td, .table.filter>thead>tr>th {
-//		border-color: $muteColour !important;
-//		color: $muteColour;
-//	} 
+}
+.urf-card-deck {
+	border-color: $highlightPrimaryColour;
+	border-radius:0px;
+	background-color:$primaryBackgroundColour;
+	display: inline-block;
+	position: relative;
+	float:left;
+	padding:3px;
+}
+.urf-card-deck:after {
+	left: 100%;
+	top: 50%;
+	border: solid transparent;
+	content: " ";
+	height: 0;
+	width: 0;
+	position: absolute;
+	pointer-events: none;
+	border-color: rgba(0, 0, 0, 0);
+	border-left-color: $primaryBackgroundColour;
+	border-width: 16px;
+	margin-top: -16px;
 }
 .urf-title {
 	text-align:center;
-	h1.logo {
-		color: #d8dd02;
-		text-shadow: 2px 2px 0px rgb(0, 0, 0);
-		font-family: 'Galdeano', sans-serif;
-		font-size:79px;
-		line-height:0.7;
-		word-spacing:-5px;
-		letter-spacing:-1px;
-		span {
-			font-size:12px;
-		}
-	}
 	margin-bottom:34px;
+}
+h1.logo {
+	color: #d8dd02;
+	text-shadow: 2px 2px 0px rgb(0, 0, 0);
+	font-family: 'Galdeano', sans-serif;
+	font-size:79px;
+	line-height:0.7;
+	word-spacing:-5px;
+	letter-spacing:-1px;
+	span {
+		font-size:12px;
+	}
+}
+h1.navLogo {
+	text-align:center;
+	margin-top:0px;
+	color: #d8dd02;
+	text-shadow: 1px 1px 0px rgb(0, 0, 0);
+	font-family: 'Galdeano', sans-serif;
+	font-size:39px;
+	line-height:0.7;
+	word-spacing:-2px;
+	letter-spacing:-1px;
+	span {
+		font-size:9px;
+	}
 }
 .urf-main {
 	margin-top:100px;
@@ -88,41 +119,56 @@ form .form-group.urf-form-filter input {
 	padding:17px;
 	margin-top:7px;
 }
-
 .btn-play {
 	color: $primaryTextColour;
 	background: $altColour;
 	background: linear-gradient(0deg, darken($altColour, 15) 30%, $altColour 70%);
 	text-align:center;
-	font-size: 17px;
-	line-height: 1;
 	border-color: darken($altColour, 15);
 	border-radius: 3px;
 	text-shadow: 1px 1px 0px rgba(30, 30, 30, 0.8);
+	height: 50px;
+	width: 100px;
+	font-weight:bold;
 }
 .btn-play:hover, .btn-play:active {
 	color: white;
 	cursor: pointer;
 	background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
 }
-
 .play-container {
 	width:119px;
 	margin: 0px auto;
 	padding:10px 0px 0px 0px;
 }
-
+urf-card {
+	font-size:0;
+	display:inline-block;
+	vertical-align:middle;
+	&>* {
+		font-size: 1rem;
+	}
+}
 .card {
+	cursor: pointer;
+	border: 2px solid $primaryBackgroundColour;
 	.default {
 		width:340px;
 		height:520px;
+		&.small {
+			
+		}
 		background-size:cover;
 		background-repeat:no-repeat;
 		background-position:center center;
 	}
 	.square {
-		width:32px;
-		height:32px;
+		width:70px;
+		height:70px;
+		&.small {
+			width: 40px;
+			height: 40px;
+		}
 		background-size:cover;
 		background-repeat:no-repeat;
 		background-position:center center;
@@ -143,20 +189,26 @@ form .form-group.urf-form-filter input {
 			color:white;
 		}
 	}
-}
-
-.oldcard {
-	position:relative;
-	box-shadow:         inset 0 0 33px #000000;
-	background-color: $primaryBackgroundColour;
-	.stats {
-		color:white;
-		width:100%;
-		height:230px;
-		position: absolute;
-		bottom: 0;
-		left: 0;
-		background-color:rgba(25, 25, 25, 0.75);
-		box-shadow: inset 0 0 33px #000000;
+	.empty-default {
 	}
+	.empty-square {
+		background-color:$primaryBackgroundColour;
+		box-shadow: inset 0 0 7px #000000;
+		width:70px;
+		height:70px;
+		&.small {
+			width: 40px;
+			height: 40px;
+		}
+	}
+	.empty-thin {
+	}
+}
+.card:hover {
+	border: 2px solid $altColour;
+}
+.card.tiled {
+	clear:none;
+	display: inline-block;
+	margin:auto auto;
 }
