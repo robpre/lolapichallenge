@@ -3,6 +3,8 @@ var debug = require('debug')('urf:server:db');
 var SHA1 = require('crypto-js/sha1');
 var _ = require('lodash');
 
+var bankSampleCards = require('./bank/sample.js');
+
 function sharify(str) {
 	return SHA1(str).toString();
 }
@@ -13,7 +15,6 @@ function DB(mongoURL, salt) {
 	this.passwordSalt = salt;
 	return this;
 }
-
 
 DB.prototype.connect = function(cb) {
 	debug('connecting to mongo');
@@ -94,8 +95,10 @@ DB.prototype.login = function(username, password, cb) {
 
 DB.prototype.close = function() {
 	debug('shutting down mongo connection');
-	this.db.close();
-	this.db = null;
+	if(this.db) {
+		this.db.close();
+		this.db = null;
+	}
 };
 
 module.exports = DB;

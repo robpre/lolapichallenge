@@ -6,7 +6,7 @@ var express = require('express');
 
 var clientFactory = require('./client.js');
 var sessionFactory = require('./session.js');
-var DB = require('./db.js');
+var DB = require('./db');
 
 function Server(mongoURL, secret, staticFileDir, salt) {
 	if(!mongoURL || !secret || !staticFileDir) {
