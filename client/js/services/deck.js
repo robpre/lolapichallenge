@@ -1,9 +1,9 @@
 var config = require('../config/deck.json');
 var _ = require('lodash');
 module.exports = [function() {
-	var deck = {};
-	for(var i = 1; i<=config.size; i++) {
-		deck[i] = {};
+	var deck = [];
+	for(var i = 0; i<config.size; i++) {
+		deck[i] = null;
 	}
 	var returnSize = function() {
 		return config.size;
@@ -26,18 +26,19 @@ module.exports = [function() {
 		}
 		return false;
 	};
+	/*
 	var swapCards = function(a, b) {
 		var index = _.findKey(deck, a);
 		if(index>0) {
 			return replaceCard(index, b);
 		}
 		return false;
-	};
+	}; */
 
 	return {
 		size: returnSize,
 		replace: replaceCard,
-		swap: swapCards,
+//		swap: swapCards,
 //		save: saveDeck,
 		get: function() {
 			return deck;

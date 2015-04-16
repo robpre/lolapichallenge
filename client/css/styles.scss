@@ -142,6 +142,9 @@ h1.navLogo {
 	padding:10px 0px 0px 0px;
 }
 urf-card {
+	-webkit-user-select: none; /* Chrome/Safari */        
+	-moz-user-select: none; /* Firefox */
+	-ms-user-select: none; /* IE10+ */
 	font-size:0;
 	display:inline-block;
 	vertical-align:middle;
@@ -149,6 +152,10 @@ urf-card {
 		font-size: 1rem;
 	}
 }
+urf-card.deck-select .card {
+	border: 2px solid $altColour;
+};
+
 .card {
 	cursor: pointer;
 	border: 2px solid $primaryBackgroundColour;
