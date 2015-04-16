@@ -3,7 +3,7 @@ var debug = require('debug')('urf:server:db');
 var SHA1 = require('crypto-js/sha1');
 var _ = require('lodash');
 
-var bankSampleCards = require('./bank/sample.js');
+var randomCards = require('./random_cards.js');
 
 function sharify(str) {
 	return SHA1(str).toString();
@@ -34,6 +34,14 @@ DB.prototype.connect = function(cb) {
 	}
 };
 
+DB.prototype.close = function() {
+	debug('shutting down mongo connection');
+	if(this.db) {
+		this.db.close();
+		this.db = null;
+	}
+};
+
 DB.prototype.encryptPasssword = function(password) {
 	return sharify(sharify(password) + this.passwordSalt);
 };
@@ -41,18 +49,24 @@ DB.prototype.encryptPasssword = function(password) {
 DB.prototype.addUser = function(username, password, cb) {
 	if(this.db) {
 		var securePassword = this.encryptPasssword( password );
-		this.db.collection('users')
-			.insert({
-				username: username,
-				password: securePassword,
-				cards: []
-			}, function(err, userObj) {
-				if(err || !userObj) {
-					cb(err);
-					return debug(err || 'failed creating user');
-				}
-				cb(null, userObj);
-			});
+		var db = this.db;
+		randomCards(this.db, 50, function(err, cards) {
+			if(err) {
+				cb(err);
+			}
+			db.collection('users')
+				.insert({
+					username: username,
+					password: securePassword,
+					bank: cards
+				}, function(err, userObj) {
+					if(err || !userObj) {
+						cb(err);
+						return debug(err || 'failed creating user');
+					}
+					cb(null, userObj);
+				});
+		});
 	} else {
 		debug('!!Error!! no db connection');
 	}
@@ -90,14 +104,6 @@ DB.prototype.login = function(username, password, cb) {
 			});
 	} else {
 		debug('!!Error!! no db connection');
-	}
-};
-
-DB.prototype.close = function() {
-	debug('shutting down mongo connection');
-	if(this.db) {
-		this.db.close();
-		this.db = null;
 	}
 };
 

@@ -17,7 +17,7 @@ module.exports = function(baseDir, sessionMiddleware, cookieParser, database) {
 		req.session.loggedInUser = null;
 		req.session.save(function(err) {
 			if(err) {
-				debug(err);
+				debug('error trying to log out', err);
 				res.status(500);
 				return res.end('internal error/cookie error');
 			}
@@ -40,7 +40,7 @@ module.exports = function(baseDir, sessionMiddleware, cookieParser, database) {
 		database.login(username, password, function(err, userObj, fresh) {
 			if(err) {
 				res.status(403);
-				debug(err);
+				debug('error trying to log in', err);
 				return res.end('password missmatch');
 			}
 
@@ -49,7 +49,7 @@ module.exports = function(baseDir, sessionMiddleware, cookieParser, database) {
 			// save the session
 			req.session.save(function(err) {
 				if(err) {
-					debug(err);
+					debug('error creating user', err);
 					res.status(500);
 					return res.end('internal error/cookie error');
 				}
