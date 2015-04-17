@@ -92,6 +92,7 @@ angular.module('urf', [require('angular-route')])
 					evt.preventDefault();
 				}
 			}
+			window.socket = socket;
 		});
 		$rootScope.$on('$routeChangeSuccess', function(evt, next, current) {
 			var windowLocation = (window.pageYOffset || document.documentElement.scrollTop);
