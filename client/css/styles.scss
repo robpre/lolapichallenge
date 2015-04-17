@@ -139,14 +139,13 @@ h1.navLogo {
 	border-radius: 3px;
 	text-shadow: 1px 1px 0px rgba(30, 30, 30, 0.8);
 	height: 50px;
-	width: 100px;
 	font-weight:bold;
 }
 .btn-play:hover, .btn-play:active {
 	color: white;
 	cursor: pointer;
-	background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
 }
+
 .play-container {
 	width:119px;
 	margin: 0px auto;
