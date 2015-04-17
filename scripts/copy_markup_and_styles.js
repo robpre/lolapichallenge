@@ -24,8 +24,7 @@ function sassify(opts) {
 				next();
 			},
 			error: function(err) {
-				debug('couldn\'t sassify');
-				debug(err);
+				debug('couldn\'t sassify', err);
 			}
 		}));
 	};

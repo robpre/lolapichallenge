@@ -6,7 +6,8 @@ var express = require('express');
 
 var clientFactory = require('./client.js');
 var sessionFactory = require('./session.js');
-var DB = require('./db.js');
+var ConfigureSocket = require('./configure_socket.js');
+var DB = require('./db');
 
 function Server(mongoURL, secret, staticFileDir, salt) {
 	if(!mongoURL || !secret || !staticFileDir) {
@@ -39,19 +40,22 @@ Server.prototype.listen = function(port, cb) {
 		var io = socketIO(httpInst, { serveClient: false });
 
 		var sessionedSocket = new SessionSockets(io, sesh.store, sesh.cookieParser);
+		var socketConfigrationHandler = new ConfigureSocket(database);
 
+		// do basic authing and make sure we manage bad users
 		sessionedSocket
 			.on('connection', function(err, socket, session) {
 				if(err) {
 					return debug('Error setting up session! ', err);
 				}
 				if(!session.loggedInUser) {
-					debug('user not authed, closing socket');
+					//debug('user not authed, closing socket');
 					return socket.disconnect();
 				}
-				debug(session.loggedInUser);
 				debug(session);
+				socketConfigrationHandler.handle(socket, session);
 			});
+
 
 		urfServer.socket = sessionedSocket;
 		urfServer.httpInst = httpInst;

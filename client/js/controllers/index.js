@@ -1,4 +1,4 @@
-module.exports = ['$scope', 'user', 'socket', '$rootScope', function($scope, user, socket, $rootScope) {
+module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', function($scope, user, socket, $rootScope, $location) {
 	$scope.loginObj = {};
 
 	function message(err, success) {
@@ -22,6 +22,7 @@ module.exports = ['$scope', 'user', 'socket', '$rootScope', function($scope, use
 						message(null, 'Welcome back');
 					break;
 				}
+				$location.path('/lobby');
 			})
 			.error(function(reply, status) {
 				switch(status) {

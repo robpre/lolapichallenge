@@ -1,7 +1,11 @@
-var lux = require('../../lux.json');
-module.exports = ['$scope', '$rootScope', function($scope, $rootScope) {
-	$scope.card = lux;
+module.exports = ['$scope', '$rootScope', 'socket', function($scope, $rootScope, socket) {
+	$scope.cards = [];
+	///client code
+	socket.emit('give me bank cards', 'name', function(bankCards) {
+		$scope.cards = bankCards;
+		$scope.$apply();
+	});
 	$scope.addToDeck = function(card) {
-		$rootScope.$broadcast('urf.deck.add', card);
+		$rootScope.$broadcast('urfLobby->deckHandler.add', card);
 	};
 }];
