@@ -32,7 +32,7 @@ Game.prototype.getActiveSockets = function() {
 };
 
 // DO NOT USE THIS TO SAVE TO DB ATM
-// because ObjectID will create new ids during application runtime
+// because ObjectID will create new id++ during application runtime
 // then reset to ObjectID 0 on server restart
 Game.prototype.serialize = function() {
 	return {

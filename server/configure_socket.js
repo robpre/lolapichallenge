@@ -86,6 +86,7 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 							}
 						} else {
 							broadcast(game.getActiveSockets(), 'game over');
+							session.activeGameID = null;
 						}
 					});
 				}
