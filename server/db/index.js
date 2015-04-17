@@ -60,6 +60,7 @@ DB.prototype.getUser = function(uid, callback, query) {
 	if(this.db) {
 		query = query || {};
 		query._id = objID(uid);
+		debug('getting user with: ', query);
 		this.db.collection('users').findOne(query, function(err, user) {
 			if(err || !user) {
 				debug('user not found looking in', err, uid);
@@ -132,17 +133,17 @@ DB.prototype.login = function(username, password, cb) {
 DB.prototype.getUsersCards = function(uid, cards, cb) {
 	function getCards(err, userObj) {
 		if(err) {
-			debug('error finding users cards', err);
+			debug('error finding users cards: ', err);
 			return cb(err);
 		}
-		cb(null, cards.map(function(cardId) {
+		cb(null, userObj, cards.map(function(cardId) {
 			return _.findWhere({
 				_id: cardId
 			});
 		}));
 	}
 	this.getUser(uid, getCards, {
-		bank: {
+		'bank._id': {
 			$in: mapIds(cards)
 		}
 	});

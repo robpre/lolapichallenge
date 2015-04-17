@@ -48,6 +48,7 @@ module.exports = ['$scope', 'urfDeck', function($scope, urfDeck) {
 		//someone wants to add a card
 		if(!isDupe(card)) {
 			addCard(card);
+			console.log($scope.handler);
 		}
 	});
 }];

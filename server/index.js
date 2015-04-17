@@ -49,7 +49,7 @@ Server.prototype.listen = function(port, cb) {
 					return debug('Error setting up session! ', err);
 				}
 				if(!session.loggedInUser) {
-					//debug('user not authed, closing socket');
+					debug('user not authed, closing socket');
 					return socket.disconnect();
 				}
 				debug(session);
