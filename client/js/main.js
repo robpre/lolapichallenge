@@ -27,6 +27,7 @@ angular.module('urf', [require('angular-route')])
 		}); 
 	}])
 	.directive('urfCard', require('./directives/urf-card.js'))
+	.directive('urfMapEntity', require('./directives/urf-map-entity.js'))
 	.service('urfUtility', ['$rootScope', function($rootScope) {
 		var navStatus = false;
 		return {
