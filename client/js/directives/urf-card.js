@@ -27,7 +27,7 @@ module.exports = function() {
 			size: '@',
 			tip: '@'
 		},
-		controller: ['$scope', '$interpolate', function($scope, $interpolate) {
+		controller: ['$scope', function($scope) {
 			var setupTooltip = function() {
 				if($scope.card) {	
 					$scope.tooltipHtml = ttS + $scope.card.championImage.image.full.replace(/\.png$/, '_0.jpg') + ttM + tooltipStats($scope.card.stats) + ttC;
