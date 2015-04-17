@@ -3,6 +3,7 @@ var Q = require('q');
 var debug = require('debug')('urf:index');
 var que = require('./lib/que');
 var Server = require('./server');
+var shell = require('shelljs');
 
 // setup some useful vars
 var baseDir = __dirname + '/';
@@ -21,6 +22,7 @@ var scripts = {
 
 function rageQuit() {
 	console.error('Error!');
+	shell.exec('notify-send "'+JSON.stringify(arguments)+'"', {async:true, silent:true});
 	console.error.apply(console, arguments);
 	process.exit(1);
 }
@@ -37,9 +39,12 @@ function Urf() {
 
 Urf.prototype.listen = function listen() {
 	debug('Running listen()');
+	var listenPromise = Q.defer();
 	this.app.listen(port, function() {
 		debug('Listening on port: ' + port);
+		listenPromise.resolve();
 	});
+	return listenPromise.promise;
 };
 
 Urf.prototype.stop = function stop() {
@@ -73,5 +78,9 @@ if(!module.parent) {
 	var urf = module.exports();
 	urf.setup()
 		.then(urf.listen.bind(urf))
+		.then(function() {
+			//we dont gaf about the return code for this
+			shell.exec('notify-send "Server is up"', {async:true, silent:true});
+		})
 		.catch(rageQuit);
 }

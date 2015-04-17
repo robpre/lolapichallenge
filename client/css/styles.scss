@@ -7,7 +7,11 @@ $primaryColour: #192335;
 $highlightPrimaryColour: #122F52;
 $altColour: #d75000;
 $muteColour: #252a34;
+$navHeight: 85px;
 $navMargin: 14px;
+
+$teamRed: rgb(202, 54, 54);
+$teamBlue: rgb(64, 64, 195);
 
 h1, h2, h3, h4, h5, h6, body, p, span {
 	color: $primaryTextColour;
@@ -40,12 +44,19 @@ form .form-group.urf-form-filter input {
 	border-color: $highlightPrimaryColour;
 }
 .navbar, #navbar, .navbar-urf {
-	height: 85px;
+	height: $navHeight;
 	background-color: darken($highlightPrimaryColour, 30);
 }
 .navbar.navbar-hide {
 	display:none;
 }
+
+.forgive-nav {
+	// we r sorry
+	position:relative;
+	top: -$navHeight;
+}
+
 .lobby-play {
 	float:left;
 }
@@ -251,4 +262,187 @@ urf-card.deck-select .card {
 			content: "\e124";
 		}
 	}
+}
+
+.urf-game {
+	.urf-game-map {
+		.map-container {
+			position:relative;
+			background-image: url('http://ddragon.leagueoflegends.com/cdn/5.2.1/img/map/map11.png');
+			background-size:cover;
+			background-repeat:no-repeat;
+			background-position:center center;
+			width:500px;
+			height:500px;
+			border: 4px solid #18243C;
+			.turret-wrapper {
+				position:absolute;
+				&.red-inhibitor-top {
+					left: 65%;
+					top: 6%;
+				}
+				&.red-inhibitor-middle {
+					left: 73%;
+					top: 24%;
+				}
+				&.red-inhibitor-bottom {
+					top: 30%;
+					right: 5%;
+				}
+				&.red-inner-top {
+					left: 48%;
+					top: 6%;
+				}
+				&.red-inner-middle {
+					right: 34%;
+					bottom: 63%;
+				}
+				&.red-inner-bottom {
+					top: 47%;
+					right: 5%;
+				}
+				&.red-outer-top {
+					left: 28%;
+					top: 6%;
+				}
+				&.red-outer-middle {
+					right: 43%;
+					bottom: 52%;
+				}
+				&.red-outer-bottom {
+					top: 69%;
+					right: 5%;
+				}
+				&.blue-inhibitor-top {
+					bottom: 31%;
+					left: 5.6%;
+				}
+				&.blue-inhibitor-middle {
+					bottom: 24%;
+					left: 24%;
+				}
+				&.blue-inhibitor-bottom {
+					left: 31%;
+					bottom: 6%;
+				}
+				&.blue-inner-top {
+					left: 5.6%;
+					bottom: 47%;
+				}
+				&.blue-inner-middle {
+					left: 34%;
+					top: 63%;
+				}
+				&.blue-inner-bottom {
+					left: 48%;
+					bottom: 6%;
+				}
+				&.blue-outer-top {
+					left: 5.6%;
+					bottom: 69%;
+				}
+				&.blue-outer-middle {
+					left: 43%;
+					top: 52%;
+				}
+				&.blue-outer-bottom {
+					left: 70%;
+					bottom: 6%;
+				}
+				.map-turret {
+					cursor: pointer;
+					background: $muteColour;
+					border-radius: 50%;
+					height: 20px;
+					width: 20px;
+					position: relative;
+					.inner {
+						position: absolute;
+						border-radius: 50%;
+						height: 14px;
+						width: 14px;
+						top: 50%;
+						left: 50%;
+						margin: -7px 0px 0px -7px;
+						&.red {
+							background: $teamRed;
+							&.destroyed {
+								background: $muteColour;
+							}
+						}
+						&.blue {
+							background: $teamBlue;
+							&.destroyed {
+								background: $muteColour;
+							}
+						}
+					}
+				}
+				.map-turret:hover {
+					background-color: $altColour;
+				}
+			}
+			.nexus-wrapper {
+				$nexusX: 85.5%;
+				$nexusY: 7.2%;
+				position:absolute;
+				&.blue {
+					right: $nexusX;
+					bottom: $nexusY;
+				}
+				&.red {
+					left: $nexusX;
+					top: $nexusY;
+				}
+				.map-nexus {
+					cursor: pointer;
+					background: $muteColour;
+					border-radius: 50%;
+					height: 40px;
+					width: 40px;
+					position: relative;
+					.inner {
+						position: absolute;
+						border-radius: 50%;
+						height: 30px;
+						width: 30px;
+						top: 50%;
+						left: 50%;
+						margin: -15px 0px 0px -15px;
+						&.red {
+							background: $teamRed;
+							&.destroyed {
+								background: $muteColour;
+							}
+						}
+						&.blue {
+							background: $teamBlue;
+							&.destroyed {
+								background: $muteColour;
+							}
+						}
+					}
+				}
+				.map-nexus:hover {
+					background-color: $altColour;
+				}
+			}
+		}
+	}
+	.urf-game-enemy {
+		.enemy-container {
+			height:350px;
+		}
+	}
+	.urf-game-card {
+		.card-container {
+
+		}
+	}
+	.urf-game-deck {
+		.deck-container {
+
+		}
+	}
+	padding-bottom: 13px;
 }

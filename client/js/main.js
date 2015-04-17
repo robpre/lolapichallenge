@@ -1,8 +1,5 @@
 var angular = require('angular');
 var _ = require('lodash');
-
-var openPaths = ['/'];
-
 // deps
 angular.module('urf', [require('angular-route')])
 	.service('user', require('./services/user.js'))
@@ -27,6 +24,7 @@ angular.module('urf', [require('angular-route')])
 		}); 
 	}])
 	.directive('urfCard', require('./directives/urf-card.js'))
+	.directive('urfMapEntity', require('./directives/urf-map-entity.js'))
 	.service('urfUtility', ['$rootScope', function($rootScope) {
 		var navStatus = false;
 		return {
@@ -74,23 +72,22 @@ angular.module('urf', [require('angular-route')])
 			}
 		});
 	}])
-	.run(['$rootScope', '$window', 'socket', '$location', function($rootScope, $window, socket, $location) {
+	.run(['$rootScope', '$window', 'socket', '$location', 'user', function($rootScope, $window, socket, $location, user) {
+		//on disconnect redirect back to home and post a logout
+		socket.on('connect', function() {
+			$location.path('/lobby');
+		});
+		//on connection redirect to lobby
+		socket.on('disconnected', function() {
+			var goHome = function() {
+				$location.path('/');
+			};
+			user.logout().then(goHome, goHome);
+		});
+
 		$rootScope.$on('$locationChangeStart', function(evt, nextUrl, currentUrl) {
-			var next = nextUrl.split('#').pop();
-			var current = currentUrl.split('#').pop();
-			if(!socket.connected && _.indexOf(openPaths, next) === -1) {
-				// let our user know what's going on
-				$rootScope.$broadcast('flashMessage', {
-					type: 'alert-danger',
-					text: 'Please log in'
-				});
-				// if we aren't currently somewhere open move us there
-				if(current && _.indexOf(openPaths, current) === -1) {
-					$location.path(openPaths[0]);
-				} else {
-					// otherwise just stop going
-					evt.preventDefault();
-				}
+			if(!socket.connected) {
+				$location.path('/');
 			}
 			window.socket = socket;
 		});

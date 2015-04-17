@@ -1,7 +1,70 @@
-<div class="container menu-container">
-	<div class="row">
-		<div class="col-md-8 col-md-offset-2">
-			<urf-card card="card"></urf-card>
+<div class="container menu-container urf-main urf-container forgive-nav urf-game">
+	<div class="row urf-lobby">
+		<div class="col-md-6 urf-game-map">
+			<div class="map-container">
+				<urf-map-entity type="nexus" team="blue"></urf-map-entity>
+				<urf-map-entity type="nexus" team="red"></urf-map-entity>
+
+				<urf-map-entity type="turret" team="blue" layer="inhibitor" lane="top"></urf-map-entity>
+				<urf-map-entity type="turret" team="blue" layer="inhibitor" lane="middle"></urf-map-entity>
+				<urf-map-entity type="turret" team="blue" layer="inhibitor" lane="bottom"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="inhibitor" lane="top"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="inhibitor" lane="middle"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="inhibitor" lane="bottom"></urf-map-entity>
+
+				<urf-map-entity type="turret" team="blue" layer="inner" lane="top"></urf-map-entity>
+				<urf-map-entity type="turret" team="blue" layer="inner" lane="middle"></urf-map-entity>
+				<urf-map-entity type="turret" team="blue" layer="inner" lane="bottom"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="inner" lane="top"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="inner" lane="middle"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="inner" lane="bottom"></urf-map-entity>
+
+				<urf-map-entity type="turret" team="blue" layer="outer" lane="top"></urf-map-entity>
+				<urf-map-entity type="turret" team="blue" layer="outer" lane="middle"></urf-map-entity>
+				<urf-map-entity type="turret" team="blue" layer="outer" lane="bottom"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="outer" lane="top"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="outer" lane="middle"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="outer" lane="bottom"></urf-map-entity>
+			</div>
+		</div>
+		<div class="col-md-6">
+			<div class="row">
+				<div class="col-md-12 urf-game-enemy">
+					<div class="well">	
+						<div class="enemy-container">
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="row">
+				<div class="col-md-6 urf-game-card">
+					<div class="well">
+						<div class="card-container">
+							<urf-card render="defaults"></urf-card>
+						</div>
+					</div>
+				</div>
+				<div class="col-md-6 urf-game-deck">
+					<div class="well">
+						<div class="deck-container">
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+							<urf-card tile="true" size="small" render="square"></urf-card>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 </div>
