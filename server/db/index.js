@@ -2,11 +2,15 @@ var MongoClient = require('mongodb').MongoClient;
 var debug = require('debug')('urf:server:db');
 var SHA1 = require('crypto-js/sha1');
 var _ = require('lodash');
+var ObjectID = require('mongodb').ObjectID;
 
 var randomCards = require('./random_cards.js');
 
 function sharify(str) {
 	return SHA1(str).toString();
+}
+function objID(str) {
+	return new ObjectID(str);
 }
 
 // MongoClient.connect(MONGO_URL, function(err, db) {});
@@ -44,6 +48,20 @@ DB.prototype.close = function() {
 
 DB.prototype.encryptPasssword = function(password) {
 	return sharify(sharify(password) + this.passwordSalt);
+};
+
+DB.prototype.getUser = function(uid, callback) {
+	if(this.db) {
+		this.db.collection('users').findOne({_id: objID(uid)}, function(err, user) {
+			if(err || !user) {
+				debug('user not found looking in', err, uid);
+				return callback(err || 'user not found');
+			}
+			callback(null, user);
+		});
+	} else {
+		debug('!!Error!! no db connection');
+	}
 };
 
 DB.prototype.addUser = function(username, password, cb) {

@@ -13,7 +13,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="well">
-						<urf-card ng-click="addToDeck(card)" card="card" tile="true" render="square"></urf-card>
+						<urf-card ng-repeat="card in cards" ng-click="addToDeck(card)" card="card" tile="true" render="square"></urf-card>
 					</div>
 				</div>
 			</div>
