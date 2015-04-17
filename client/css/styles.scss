@@ -170,16 +170,6 @@ urf-card.deck-select .card {
 .card {
 	cursor: pointer;
 	border: 2px solid $primaryBackgroundColour;
-	.default {
-		width:340px;
-		height:520px;
-		&.small {
-			
-		}
-		background-size:cover;
-		background-repeat:no-repeat;
-		background-position:center center;
-	}
 	.square {
 		width:70px;
 		height:70px;
@@ -191,24 +181,6 @@ urf-card.deck-select .card {
 		background-repeat:no-repeat;
 		background-position:center center;
 	}
-	.thin {
-		width: 100%;
-		height:30px;
-		margin:5px 0px;
-		padding:0px 5px;
-		background-size:cover;
-		background-repeat:no-repeat;
-		background-position:center center;
-		.name-plate {
-			background-color:rgba(25, 25, 25, 0.75);
-			font-weight:bold;
-			text-align:center;
-			line-height:30px;
-			color:white;
-		}
-	}
-	.empty-default {
-	}
 	.empty-square {
 		background-color:$primaryBackgroundColour;
 		box-shadow: inset 0 0 7px #000000;
@@ -219,7 +191,19 @@ urf-card.deck-select .card {
 			height: 40px;
 		}
 	}
-	.empty-thin {
+}
+.card-tooltip {
+	.tooltip-image {
+		width:150px;
+		height:250px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+	}
+	.tooltip-stats {
+		padding-top:10px;
+		padding-bottom:8px;
+		width:150px;
 	}
 }
 .card:hover {
