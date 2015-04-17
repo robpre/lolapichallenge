@@ -1,5 +1,10 @@
 <div class="container menu-container urf-main urf-container forgive-nav urf-game">
-	<div class="row urf-lobby">
+	<div ng-if="!game.current" class="row urf-lobby">
+		<div class="col-md-2 col-md-offset-5">
+			<h4>Finding game...</h4>
+		</div>
+	</div>
+	<div ng-if="game.current" class="row urf-lobby">
 		<div class="col-md-6 urf-game-map">
 			<div class="map-container">
 				<urf-map-entity type="nexus" team="blue"></urf-map-entity>
