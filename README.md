@@ -42,11 +42,11 @@ export URF_SALT=somethingelse21343324
 
 #### Tweaking Cards
 
-* You will need to modify the game server logic inside server/game/index.js, here you will find a list of predicates that manage the comparison against the stats parsed inside your card generator
+You will need to modify the game server logic inside server/game/index.js, here you will find a list of predicates that manage the comparison against the stats parsed inside your card generator
 
 #### Tweaking Deck Size
 
-* This is currently handled in two locations, the deck handler client and inside the server/db/index.js
+This is currently handled in two locations, the deck handler client and inside the server/db/index.js
 
 #### Start
 
