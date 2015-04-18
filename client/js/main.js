@@ -89,7 +89,7 @@ angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 		});
 
 		socket.on('urfError', function(message) {
-			$rootScope.emit('flashMessage', {
+			$rootScope.$broadcast('flashMessage', {
 				text: message.message,
 				type: message.type === 'fatal' ? 'alert-danger' : 'alert-info'
 			});

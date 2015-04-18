@@ -28,30 +28,81 @@ function Game(database, playerOne) {
 	return this;
 }
 
-Game.prototype.start = function() {
-	this.broadcast('game state', this.serialize());
+Game.prototype.getCardFor = function(i, cardId) {
+	return _.findWhere(this.clients[i].deck, {_id: new ObjectID(cardId)});
 };
 
-// 
-Game.prototype.action = function(playerID, actionName, cb) {
-
+// where === 'inhibitor.top'
+Game.prototype.action = function(username, target, actionName, card, where, stat, cb) {
+	var activePlayerIndex = _.findIndex(this.clients, function(c) {
+		return c.user === username;
+	});
+	var enemyIndex = activePlayerIndex ? 0 : 1;
+	var cardObj = this.getCardFor(activePlayerIndex, card);
+	debug('action card obj', cardObj);
+	if(cardObj && ['attack', 'defend'].indexOf(actionName) > -1) {
+		switch(target) {
+			case 'preround':
+				if(this.progress.preround) {
+					this.defend(activePlayerIndex, cardObj, where);
+				}
+			break;
+			case 'round':
+				if(!this.progress.preround && this.turn === activePlayerIndex) {
+					switch(actionName) {
+						case 'attack':
+							this.attack(activePlayerIndex, enemyIndex, cardObj, where, stat);
+						break;
+						case 'defend':
+							this.defend(activePlayerIndex, cardObj, where);
+						break;
+					}
+					this.turn = this.turn ? 0 : 1;
+				}
+			break;
+		}
+	}
+	this.broadcastGameState();
 };
 
-Game.prototype.defend = function(playerIDvar) {
-
+Game.prototype.defend = function(playerIndex, card, where) {
+	var location = where.split('.')[0];
+	var lane = where.split('.')[1];
+	if(this.map[playerIndex] && this.map[playerIndex].open(location, lane)) {
+		this.map[playerIndex].defend(location, lane, card);
+	}
 };
-Game.prototype.attack = function() {
-
+Game.prototype.attack = function(playerIndex, enemyIndex, card, where, stat) {
+	var location = where.split('.')[0];
+	var lane = where.split('.')[1];
+	if(this.map[enemyIndex] && this.map[enemyIndex].open(location, lane) && this.deciders[stat]) {
+		var defendingCard = this.map[enemyIndex].getTurret(location, lane);
+		if(defendingCard) {
+			if(this.deciders[stat](card.stats[stat], defendingCard.stats[stat])) {
+				this.map[enemyIndex].destroy(location, lane);
+			}
+		} else {
+			this.map[enemyIndex].destroy(location, lane);
+		}
+	}
 };
 
-Game.prototype.endPreround = function(uid) {
+Game.prototype.broadcast = function() {
+	var args = _.toArray(arguments);
+	this.clients.forEach(function(user) {
+		debug('triggering...', args);
+		user.socket.emit.apply(user.socket, args);
+	});
+};
 
+Game.prototype.endPreround = function(username) {
+	if(this.progress.endPreroundForUser(username)) {
+		this.broadcastGameState();
+	}
 };
 
 Game.prototype.addClient = function(user) {
 	if(this.hasSpace()) {
-		// user.deck is provided already
-		user.destroyedDeck = [];
 		this.clients.push(user);
 	}
 };
@@ -80,19 +131,18 @@ Game.prototype.over = function(cb) {
 
 // maybe do some other shit
 Game.prototype.isReady = function() {
+	debug(this.clients);
 	return !this.hasSpace();
 };
 
 Game.prototype.hasSpace = function() {
-	return this.clients.length === 1;
+	return this.clients.length < 2;
 };
 
-Game.prototype.broadcast = function() {
-	var args = _.toArray(arguments);
-	this.getActiveSockets().forEach(function(socket) {
-		debug('triggering...', args);
-		socket.emit.apply(socket, args);
-	});
+Game.prototype.broadcastGameState = function() {
+	this.clients.forEach(function(user) {
+		user.socket.emit('game state', this.serialize(user.user));
+	}.bind(this));
 };
 
 Game.prototype.getActiveSockets = function() {
@@ -129,23 +179,25 @@ Game.prototype.deciders = {
 };
 
 Game.prototype.getClient = function(i, cards) {
-	return cards ? this.clients[i] : _.omit(this.clients[i], 'deck');
+	var without = cards ? ['socket', 'session'] : ['socket', 'session', 'deck'];
+	return _.omit(this.clients[i], without);
 };
 
 // DO NOT USE THIS TO SAVE TO DB ATM
 // because ObjectID will create new id++ during application runtime
 // then reset to ObjectID 0 on server restart
-Game.prototype.serialize = function(uid) {
+Game.prototype.serialize = function(user) {
 	var activePlayerIndex = _.findIndex(this.clients, function(c) {
-		return c._id === uid;
+		return c.user === user;
 	});
 	var enemyIndex = activePlayerIndex ? 0 : 1;
 	var enemy = this.clients[enemyIndex];
 	var player = this.clients[activePlayerIndex];
-	debug('active player', player);
-	debug('enemy', enemy);
+	debug('active player', activePlayerIndex);
+	debug('enemy', enemyIndex);
 
 	return {
+		turn: this.clients[this.turn].user,
 		players: {
 			blue: this.getClient(activePlayerIndex, true),
 			red: this.getClient(enemyIndex)
@@ -154,7 +206,7 @@ Game.prototype.serialize = function(uid) {
 			blue: this.map[activePlayerIndex].serialize(),
 			red: this.map[enemyIndex].cardLess()
 		},
-		preround: this.preround.serialize()
+		progress: this.progress.serialize()
 	};
 };
 
