@@ -422,19 +422,14 @@ urf-card.deck-select .card {
 			}
 		}
 	}
-	.urf-game-enemy {
-		.enemy-container {
+	.urf-game-message {
+		.message-container {
 			height:350px;
-		}
-	}
-	.urf-game-card {
-		.card-container {
-
+			overflow: auto;
 		}
 	}
 	.urf-game-deck {
 		.deck-container {
-
 		}
 	}
 	padding-bottom: 13px;

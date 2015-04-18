@@ -7,6 +7,7 @@
 	<div ng-if="game.current" class="row urf-lobby">
 		<div class="col-md-6 urf-game-map">
 			<div class="map-container">
+				<!--
 				<urf-map-entity type="nexus" team="blue"></urf-map-entity>
 				<urf-map-entity type="nexus" team="red"></urf-map-entity>
 
@@ -29,44 +30,24 @@
 				<urf-map-entity type="turret" team="blue" layer="outer" lane="bottom"></urf-map-entity>
 				<urf-map-entity type="turret" team="red" layer="outer" lane="top"></urf-map-entity>
 				<urf-map-entity type="turret" team="red" layer="outer" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="outer" lane="bottom"></urf-map-entity>
+				<urf-map-entity type="turret" team="red" layer="outer" lane="bottom"></urf-map-entity> -->
 			</div>
 		</div>
 		<div class="col-md-6">
 			<div class="row">
-				<div class="col-md-12 urf-game-enemy">
+				<div class="col-md-12 urf-game-message">
 					<div class="well">	
-						<div class="enemy-container">
+						<div class="message-container">
+							<p ng-repeat="message in game.messages" class="alert" ng-class="{danger: message.type == 'negative', success: message.type == 'success'}"></p>
 						</div>
 					</div>
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-6 urf-game-card">
-					<div class="well">
-						<div class="card-container">
-							<urf-card></urf-card>
-						</div>
-					</div>
-				</div>
-				<div class="col-md-6 urf-game-deck">
+				<div class="col-md-12 urf-game-deck">
 					<div class="well">
 						<div class="deck-container">
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
-							<urf-card tile="true" size="small"></urf-card>
+							<urf-card ng-click="setPointer(card)" ng-repeat="card in game.deck" ng-class="{'deck-select': cardPointer._id == card._id}" tile="true" card="card"></urf-card>
 					</div>
 				</div>
 			</div>

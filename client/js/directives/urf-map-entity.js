@@ -7,14 +7,9 @@ module.exports = function() {
 			type: '@',
 			team: '@',
 			layer: '@',
-			lane: '@'
+			lane: '@',
+			destroyed: '='
 		},
-		link: function(scope, element, attrs) {
-			if(scope.type === 'turret') {
-				console.log('Made a map entity: '+scope.type+' '+scope.layer+'-'+scope.lane, scope);
-			} else {
-				console.log('Made a map entity: '+scope.type, scope);
-			}
-		}
+		link: function(scope, element, attrs) {}
 	};
 };
