@@ -12,23 +12,22 @@ module.exports = ['$rootScope', function($rootScope) {
 	};
 	var getMapState = function() {
 		//parse and format the state
-		return {lol: 'some map fixture'}; 
+		return state.map; 
 	};
 	var getAvailableCards = function() {
 //		return state.states.player.availableDeck;
-		return {lol: 'some card fixture'};
+		return state.players.blue.deck;
 	};
-	var calculateCurrentRound = function() {
-		var round = {};
-		if(state.states.preround) {
-			round.type = 'preround';
+	var calculateCurrentTurn = function() {
+		var turn = {};
+		if(state.progress.preround) {
+			turn.type = 'preround';
 		} else {
-			var latestRound = state.states.rounds[state.states.rounds.length-1];
-			round.type = 'round';
-			round.number = latestRound.number;
-			round.ours = (latestRound.player === 'blue' ? true : false);
+			var latestRound = state.progress.rounds[state.progress.rounds.length-1];
+			turn.type = 'round';
+			turn.ours = state.yourTurn;
 		}
-		return round;
+		return turn;
 	}; 
 
 	var getMessages = function() {
@@ -60,7 +59,7 @@ module.exports = ['$rootScope', function($rootScope) {
 		},
 		cards: getAvailableCards,
 		map: getMapState,
-		round: calculateCurrentRound,
+		round: calculateCurrentTurn,
 		messages: getMessages
 	};
 }];

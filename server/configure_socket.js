@@ -148,6 +148,14 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 			}
 		}		
 	});
+
+	socket.on('end turn', function() {
+		findUser(function(userObj) {
+			getGame(function(activeGame) {
+				activeGame.endPreround(userObj.username);
+			});
+		});
+	});
 };
 
 ConfigureSocket.prototype.closeGame = function(game) {
