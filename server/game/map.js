@@ -51,7 +51,7 @@ GameMap.prototype.cardLess = function() {
 				location: location,
 				lane: lane,
 				data: {
-					statis: map[location][lane].status
+					statis: map.turrets[location][lane].status
 				}
 			});
 		});
@@ -78,7 +78,7 @@ GameMap.prototype.defend = function(location, lane, card) {
 GameMap.prototype.destroy = function(location, lane) {
 	this.map.turrets[location][lane].status = false;
 };
-
+var debug = require('debug')('urf:server:game:map');
 GameMap.prototype.serialize = function() {
 	var output = {
 		nexus: this.map.nexus.status,
@@ -90,7 +90,7 @@ GameMap.prototype.serialize = function() {
 			output.turrets.push({
 				location: location,
 				lane: lane,
-				data: map[location][lane]
+				data: map.turrets[location][lane]
 			});
 		});
 	});

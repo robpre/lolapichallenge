@@ -9,27 +9,10 @@
 			<div class="map-container">
 				<urf-map-entity type="nexus" team="blue"></urf-map-entity>
 				<urf-map-entity type="nexus" team="red"></urf-map-entity>
-				<!--
-				<urf-map-entity type="turret" team="blue" layer="inhibitor" lane="top"></urf-map-entity>
-				<urf-map-entity type="turret" team="blue" layer="inhibitor" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="blue" layer="inhibitor" lane="bottom"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="inhibitor" lane="top"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="inhibitor" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="inhibitor" lane="bottom"></urf-map-entity>
+			
+				<urf-map-entity ng-repeat="turret in game.map.blue.turrets" ng-click="defendEntity(turret.location, turret.lane)" type="turret" team="blue" layer="{{turret.location}}" lane="{{turret.lane}}" assigned="turret.data.defending"></urf-map-entity>
 
-				<urf-map-entity type="turret" team="blue" layer="inner" lane="top"></urf-map-entity>
-				<urf-map-entity type="turret" team="blue" layer="inner" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="blue" layer="inner" lane="bottom"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="inner" lane="top"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="inner" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="inner" lane="bottom"></urf-map-entity>
-
-				<urf-map-entity type="turret" team="blue" layer="outer" lane="top"></urf-map-entity>
-				<urf-map-entity type="turret" team="blue" layer="outer" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="blue" layer="outer" lane="bottom"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="outer" lane="top"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="outer" lane="middle"></urf-map-entity>
-				<urf-map-entity type="turret" team="red" layer="outer" lane="bottom"></urf-map-entity> -->
+				<urf-map-entity ng-repeat="turret in game.map.red.turrets" ng-click="attackEntity(turret.location, turret.lane)" type="turret" team="red" layer="{{turret.location}}" lane="{{turret.lane}}"></urf-map-entity>
 			</div>
 		</div>
 		<div class="col-md-6">
@@ -43,9 +26,9 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-2">
-					<table ng-if="cardPointer">
-						<tr ng-repeat="(key, stat) cardPointer.stats" ng-click="setStatPointer(key)">
+				<div class="col-md-4">
+					<table ng-if="cardPointer && (game.round.type !== 'preround')">
+						<tr ng-repeat="(key, stat) in cardPointer.stats" ng-click="setStatPointer(key)">
 							<td>{{key}}</td>
 							<td>{{stat}}</td>
 						</tr>

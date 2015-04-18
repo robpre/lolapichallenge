@@ -7,19 +7,28 @@ module.exports = ['$scope', 'urfState', 'socket', function($scope, urfState, soc
 	};
 
 	$scope.setStatPointer = function(stat) {
+		console.log('setting stat', stat);
 		$scope.statPointer = stat;
 	};
-	$scope.setPointer = function(cardId) {
-		$scope.cardPointer = cardId;
+	$scope.setPointer = function(card) {
+		console.log('setting card', card);
+		$scope.cardPointer = card;
 	};
 	$scope.attackEntity = function(position, lane) {
 		//use card pointer
 		if($scope.cardPointer !== null && $scope.statPointer !== null) {
 			socket.emit('action', $scope.game.round.type, 'attack', $scope.cardPointer._id, position + '.' + lane, $scope.statPointer);
+			$scope.cardPointer = null;
+			$scope.statPointer = null;
 		}
 	};
 	$scope.defendEntity = function(position, lane) {
 		//use card pointer
+		if($scope.cardPointer !== null) {
+			socket.emit('action', $scope.game.round.type, 'defend', $scope.cardPointer._id, position + '.' + lane);
+			$scope.cardPointer = null;
+			$scope.statPointer = null;
+		}
 	};
 	$scope.endTurn = function() {};
 

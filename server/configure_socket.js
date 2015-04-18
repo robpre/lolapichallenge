@@ -115,6 +115,7 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 	});
 
 	socket.on('action', function(target, actionName, card, where, stat) {
+		debug(target, actionName, card, where, stat);
 		findUser(function(userObj) {
 			getGame(function(activeGame) {
 				activeGame.action(userObj.username, target, actionName, card, where, stat, function(err) {
