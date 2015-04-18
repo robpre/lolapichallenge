@@ -20,7 +20,7 @@
 						<urf-card ng-repeat="card in handler.deck track by $index" ng-click="setPointer($index)" render="square" card="card" tile="true" size="small" ng-class="{'deck-select': handler.cardPointer == $index}"></urf-card>
 					</div>
 				</div>
-				<div class="col-md-3" ng-controller="play">
+				<div class="col-md-3" ng-controller="urfPlay">
 					<div ng-click="findGame()" class="btn btn-play btn-lg lobby-play">Play</div>
 				</div>
 			</div>

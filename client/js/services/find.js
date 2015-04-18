@@ -1,16 +1,19 @@
 var _ = require('lodash');
 var Q = require('q');
-module.exports = [function() {
+module.exports = ['socket', '$rootScope', 'urfState', function(socket, $rootScope, urfState) {
 	var lookForGame = function(gameConfig) {
 		//make socket request
 		var foundGame = Q.defer();
-		setTimeout(function(){ 
-			foundGame.resolve(gameConfig);
-		}, 10000);
-
+		console.log('Finding...');
+		socket.emit('find game', gameConfig);
+		socket.once('game found', function(startingState) {
+			console.log('Found a game');
+			urfState.load(startingState);	
+			$rootScope.$broadcast('urfFind.found');
+			foundGame.resolve();
+		});
 		return foundGame.promise;
 	};
-
 	return {
 		game: lookForGame
 	};
