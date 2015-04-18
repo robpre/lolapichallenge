@@ -58,7 +58,7 @@ module.exports = ['$rootScope', function($rootScope) {
 		current: function() {
 			return state;
 		},
-		deck: getAvailableCards,
+		cards: getAvailableCards,
 		map: getMapState,
 		round: calculateCurrentRound,
 		messages: getMessages
