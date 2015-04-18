@@ -44,10 +44,18 @@
 				</div>
 			</div>
 			<div class="row">
-				<div class="col-md-12 urf-game-deck">
+				<div class="col-md-2">
+					<table ng-if="cardPointer">
+						<tr ng-repeat="(key, stat) cardPointer.stats" ng-click="setStatPointer(key)">
+							<td>{{key}}</td>
+							<td>{{stat}}</td>
+						</tr>
+					</table>
+				</div>
+				<div class="col-md-8 urf-game-deck">
 					<div class="well">
 						<div class="deck-container">
-							<urf-card ng-click="setPointer(card)" ng-repeat="card in game.deck" ng-class="{'deck-select': cardPointer._id == card._id}" tile="true" card="card"></urf-card>
+							<urf-card ng-repeat="card in game.deck" ng-click="setPointer(card)" ng-class="{'deck-select': cardPointer._id == card._id}" tile="true" card="card"></urf-card>
 					</div>
 				</div>
 			</div>
