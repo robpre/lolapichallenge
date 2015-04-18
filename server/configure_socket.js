@@ -52,7 +52,7 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 			return error(true, 'not in a game', 'recoverable');
 		}
 		var activeGame = _.findWhere(handler.games, {id: session.activeGameID});
-		if(!error(!activeGame, 'game not found', 'recoverable')) {
+		if(!error(activeGame, 'game not found', 'recoverable')) {
 			callback(activeGame);
 		}
 	}
@@ -66,7 +66,11 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 	socket.on('find game', function(deck) {
 		// deck == [] of ids
 		if(session.activeGameID) {
-			return error(true, 'already in a game', 'recoverable');
+			session.activeGameID = null;
+			session.save(function() {
+				error(true, 'already in a game', 'recoverable');
+			});
+			return;
 		}
 		// this will only find a user if they have all the cards
 		database.getUsersCards(session.loggedInUser, deck, function(err, userObj, cards) {
@@ -77,9 +81,11 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 					debug(cards);
 					var game = handler.findGame();
 					var playerObj = {
-						user: _.omit(userObj, 'bank'),
+						user: userObj.username,
 						deck: cards,
-						socket: socket
+						destroyedDeck: [],
+						socket: socket,
+						session: session
 					};
 
 					if(!game) {
@@ -94,11 +100,12 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 						if(!error(err, 'error saving game to session', 'recoverable')) {
 							debug('game is ready: ', game.isReady());
 							if(game.isReady()) {
-								broadcast(game.getActiveSockets(), 'game found', game.serialize());
+								game.broadcastGameState();
 							}
 						} else {
 							handler.closeGame(game);
 							session.activeGameID = null;
+							session.save();
 						}
 					});
 					debug('this many games since launch: ', handler.games.length);
@@ -107,12 +114,14 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 		});
 	});
 
-	socket.on('action', function(target, type) {
-		getGame(function(activeGame) {
-			activeGame.action(type, function(err) {
-				if(error(err, 'error actioning')) {
-					broadcast(activeGame.getActiveSockets(), 'game over');
-				}
+	socket.on('action', function(target, actionName, card, where, stat) {
+		findUser(function(userObj) {
+			getGame(function(activeGame) {
+				activeGame.action(userObj.username, target, actionName, card, where, stat, function(err) {
+					if(error(err, 'error actioning')) {
+						broadcast(activeGame.getActiveSockets(), 'game over');
+					}
+				});
 			});
 		});
 	});
@@ -128,16 +137,30 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 			socket.emit('game state', activeGame.serialize());
 		});
 	});
+
+	socket.on('disconnect', function() {
+		for (var j = 0; j < handler.games.length; j++) {
+			if(!handler.games[j]) { continue; }
+			for (var i = 0; i < handler.games[j].clients.length; i++) {
+				if(handler.games[j].clients[i].socket === socket) {
+					handler.closeGame(handler.games[j]);
+				}
+			}
+		}		
+	});
 };
 
 ConfigureSocket.prototype.closeGame = function(game) {
 	var ind = this.games.indexOf(game);
-	game.close(function() {
-		// remove it from memory
-		// hopefully get garbage collected
-		// worried about splicing array
-		this.games[ind] = null;
+	game.clients.forEach(function(c) {
+		c.socket.emit('game over');
+		c.session.activeGameID = null;
+		c.session.save();
 	});
+	// remove it from memory
+	// hopefully get garbage collected
+	// worried about splicing array
+	this.games[ind] = null;
 };
 
 ConfigureSocket.prototype.findGame = function() {

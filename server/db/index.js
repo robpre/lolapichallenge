@@ -150,8 +150,8 @@ DB.prototype.getUsersCards = function(uid, cards, cb) {
 			return cb(err);
 		}
 		cb(null, userObj, cards.map(function(cardId) {
-			return _.findWhere({
-				_id: cardId
+			return _.findWhere(userObj.bank, {
+				_id: objID(cardId)
 			});
 		}));
 	}

@@ -30,9 +30,8 @@ function GameMap() {
 }
 
 var levels = ['inhibitor', 'inner', 'outer'];
-
 GameMap.prototype.open = function(location, lane) {
-	var next = levels.indexOf(location) + 1;
+	var next = levels[levels.indexOf(location) + 1];
 	// if next most vulnerable is falsey then its outer
 	if(!next) {
 		return true;
@@ -52,12 +51,16 @@ GameMap.prototype.cardLess = function() {
 		['top', 'middle', 'bottom'].forEach(function(lane) {
 			var t = {};
 			t[lane] = {
-				stutus: map.turrets[location][lane].status
+				status: map.turrets[location][lane].status
 			};
 			output.turrets[location] = t;
 		});
 	});
 	return output;
+};
+
+GameMap.prototype.getTurret = function(location, lane) {
+	return this.map.turrests[location][lane];
 };
 
 // GameMap.prototype.openTurrets = function() {

@@ -1,6 +1,6 @@
 var _ = require('lodash');
 var Q = require('q');
-module.exports = ['socket', 'urfState', function(socket, $rootScope, urfState) {
+module.exports = ['socket', 'urfState', function(socket, urfState) {
 	var lookForGame = function(gameConfig) {
 		//make socket request
 		var foundGame = Q.defer();
