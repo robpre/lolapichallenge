@@ -20,7 +20,7 @@ module.exports = ['$rootScope', function($rootScope) {
 	};
 	var calculateCurrentRound = function() {
 		var round = {};
-		if(!state.states.preround.completed) {
+		if(state.states.preround) {
 			round.type = 'preround';
 		} else {
 			var latestRound = state.states.rounds[state.states.rounds.length-1];
@@ -51,7 +51,7 @@ module.exports = ['$rootScope', function($rootScope) {
 		load: loadState,
 /*		finished: checkFinished,
 		victory: getVictor, */
-		current: function() {
+		get: function() {
 			return state;
 		},
 		deck: getAvailableCards,
