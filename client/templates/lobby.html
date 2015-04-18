@@ -5,7 +5,7 @@
 				<div class="col-md-5">
 					<form role="form" novalidate>
 						<div class="form-group urf-form-filter">
-							<input name="filter" class="form-control" type="text" placeholder="Filter Champions..."/>	
+							<input name="filter" class="form-control" type="text" ng-model="textFilter" placeholder="Filter Champions..."/>	
 						</div>
 					</form>
 				</div>
@@ -13,7 +13,7 @@
 			<div class="row">
 				<div class="col-md-12">
 					<div class="well">
-						<urf-card ng-repeat="card in cards" ng-click="addToDeck(card)" card="card" tile="true" render="square"></urf-card>
+						<urf-card ng-repeat="card in cards | filter:textFilter" ng-click="addToDeck(card)" card="card" tile="true"></urf-card>
 					</div>
 				</div>
 			</div>

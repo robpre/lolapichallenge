@@ -139,14 +139,13 @@ h1.navLogo {
 	border-radius: 3px;
 	text-shadow: 1px 1px 0px rgba(30, 30, 30, 0.8);
 	height: 50px;
-	width: 100px;
 	font-weight:bold;
 }
 .btn-play:hover, .btn-play:active {
 	color: white;
 	cursor: pointer;
-	background: linear-gradient(0deg, darken($altColour, 17) 30%, darken($altColour, 5) 70%);
 }
+
 .play-container {
 	width:119px;
 	margin: 0px auto;
@@ -170,16 +169,6 @@ urf-card.deck-select .card {
 .card {
 	cursor: pointer;
 	border: 2px solid $primaryBackgroundColour;
-	.default {
-		width:340px;
-		height:520px;
-		&.small {
-			
-		}
-		background-size:cover;
-		background-repeat:no-repeat;
-		background-position:center center;
-	}
 	.square {
 		width:70px;
 		height:70px;
@@ -191,24 +180,6 @@ urf-card.deck-select .card {
 		background-repeat:no-repeat;
 		background-position:center center;
 	}
-	.thin {
-		width: 100%;
-		height:30px;
-		margin:5px 0px;
-		padding:0px 5px;
-		background-size:cover;
-		background-repeat:no-repeat;
-		background-position:center center;
-		.name-plate {
-			background-color:rgba(25, 25, 25, 0.75);
-			font-weight:bold;
-			text-align:center;
-			line-height:30px;
-			color:white;
-		}
-	}
-	.empty-default {
-	}
 	.empty-square {
 		background-color:$primaryBackgroundColour;
 		box-shadow: inset 0 0 7px #000000;
@@ -219,7 +190,19 @@ urf-card.deck-select .card {
 			height: 40px;
 		}
 	}
-	.empty-thin {
+}
+.card-tooltip {
+	.tooltip-image {
+		width:150px;
+		height:250px;
+		background-size:cover;
+		background-repeat:no-repeat;
+		background-position:center center;
+	}
+	.tooltip-stats {
+		padding-top:10px;
+		padding-bottom:8px;
+		width:150px;
 	}
 }
 .card:hover {
@@ -231,17 +214,27 @@ urf-card.deck-select .card {
 	margin:auto auto;
 }
 [ng-controller="flash"] {
+	padding-top: 1em;
 	width:  100%;
 	display: flex;
+	position: fixed;
+	top: 0;
+	z-index: 1500;
 
 	span {
 		color: inherit;
 	}
 
-	> div {
+	> ul {
 		min-width: 25%;
 		max-width: 50%;
+		max-height: 10em;
+		overflow-y: auto;
 		margin: 0 auto;
+	}
+
+	li {
+		list-style: none;
 	}
 
 	.alert-danger {
