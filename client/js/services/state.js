@@ -51,7 +51,11 @@ module.exports = ['$rootScope', function($rootScope) {
 		load: loadState,
 /*		finished: checkFinished,
 		victory: getVictor, */
+		/* too tired now */
 		get: function() {
+			return state;
+		},
+		current: function() {
 			return state;
 		},
 		deck: getAvailableCards,
