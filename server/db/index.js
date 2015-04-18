@@ -10,7 +10,10 @@ function sharify(str) {
 	return SHA1(str).toString();
 }
 function objID(str) {
-	return new ObjectID(str);
+	return str.length === 24 ? new ObjectID(str) : str;
+}
+function mapIds(arr) {
+	return arr.map(objID);
 }
 
 // MongoClient.connect(MONGO_URL, function(err, db) {});
@@ -49,10 +52,16 @@ DB.prototype.close = function() {
 DB.prototype.encryptPasssword = function(password) {
 	return sharify(sharify(password) + this.passwordSalt);
 };
+DB.prototype.auth = function(user, nonSecuredPassword) {
+	return user.password === this.encryptPasssword(nonSecuredPassword);
+};
 
-DB.prototype.getUser = function(uid, callback) {
+DB.prototype.getUser = function(uid, callback, query) {
 	if(this.db) {
-		this.db.collection('users').findOne({_id: objID(uid)}, function(err, user) {
+		query = query || {};
+		query._id = objID(uid);
+		debug('getting user with: ', query);
+		this.db.collection('users').findOne(query, function(err, user) {
 			if(err || !user) {
 				debug('user not found looking in', err, uid);
 				return callback(err || 'user not found');
@@ -90,10 +99,6 @@ DB.prototype.addUser = function(username, password, cb) {
 	}
 };
 
-DB.prototype.auth = function(user, nonSecuredPassword) {
-	return user.password === this.encryptPasssword(nonSecuredPassword);
-};
-
 DB.prototype.login = function(username, password, cb) {
 	if(this.db) {
 		var self = this;
@@ -123,6 +128,29 @@ DB.prototype.login = function(username, password, cb) {
 	} else {
 		debug('!!Error!! no db connection');
 	}
+};
+
+DB.prototype.getUsersCards = function(uid, cards, cb) {
+	function getCards(err, userObj) {
+		if(err) {
+			debug('error finding users cards: ', err);
+			return cb(err);
+		}
+		cb(null, userObj, cards.map(function(cardId) {
+			return _.findWhere({
+				_id: cardId
+			});
+		}));
+	}
+	this.getUser(uid, getCards, {
+		'bank._id': {
+			$in: mapIds(cards)
+		}
+	});
+};
+
+DB.prototype.activeGames = function(cb) {
+	this.db.collection('games').find().toArray(cb);
 };
 
 module.exports = DB;
