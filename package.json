@@ -1,7 +1,7 @@
 {
   "name": "lolapichallenge",
-  "version": "0.1.1",
-  "description": "Dunno yet",
+  "version": "1.0.0",
+  "description": "The strategic URF game we've all been waiting for...",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
@@ -14,7 +14,11 @@
     "type": "git",
     "url": "https://github.com/RpprRoger/lolapichallenge.git"
   },
-  "author": "",
+  "author": "Robert Preus-MacLaren <rpprroger@gmail.com>",
+  "contributors": [{
+		"name": "Anthony Stansbridge",
+		"email": "<anthony@anthonystansbridge.co.uk>"
+  }],
   "license": "ISC",
   "bugs": {
     "url": "https://github.com/RpprRoger/lolapichallenge/issues"
