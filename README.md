@@ -10,15 +10,15 @@ Cards of Legends fulfills the ultimate URF strategy dream by combining the 'inte
 
 #### Want to set it up yourself?
 - You will need:
--* Patience (hey, its a hack!)
--* A copy of mongodb (https://mongolab.com/)
--* Node, we recommend to use nvm (https://github.com/creationix/nvm)
--* Linux (May work on Mac OSX)
--* Riot Games API key to build your card database
+* Patience (hey, its a hack!)
+* A copy of mongodb (https://mongolab.com/)
+* Node, we recommend to use nvm (https://github.com/creationix/nvm)
+* Linux (May work on Mac OSX)
+* Riot Games API key to build your card database
 
 - Optionally, if you want to change the stats on your cards, trigger shinies, ban champions... you will need:
--* Ability to write basic javascripts
--* More Patience (it really is a hack!)
+* Ability to write basic javascripts
+* More Patience (it really is a hack!)
 
 #### Technical Setup Linux
 You will need to clone the repo and create a .env file
@@ -34,10 +34,13 @@ export URF_SALT=somethingelse21343324
 --------------------------
 Install dependencies
 - ```$ npm install```
+--------------------------
 Fill database with cards (this can be tweaked to your desire - scripts/parse/generators)
 -``` $ npm run feed```
+--------------------------
 Start the server on the exposed PORT environment variable
 - ```$ npm run start```
+--------------------------
 Access via http://localhost:PORT/
 
 #### Authors
