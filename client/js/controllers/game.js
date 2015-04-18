@@ -41,8 +41,10 @@ module.exports = ['$scope', 'urfState', 'socket', function($scope, urfState, soc
 	socket.on('game state', function(state) {
 		urfState.load(state);
 		processUi();
+		$scope.$apply();
 	});
 	$scope.$on('urfFind.found', function() {
 		processUi();
+		$scope.$apply();
 	});
 }];

@@ -42,18 +42,18 @@ GameMap.prototype.open = function(location, lane) {
 GameMap.prototype.cardLess = function() {
 	var output = {
 		nexus: this.map.nexus.status,
-		turrets: {
-
-		}
+		turrets: []
 	};
 	var map = this.map;
 	['inhibitor', 'inner', 'outer'].forEach(function(location) {
 		['top', 'middle', 'bottom'].forEach(function(lane) {
-			var t = {};
-			t[lane] = {
-				status: map.turrets[location][lane].status
-			};
-			output.turrets[location] = t;
+			output.turrets.push({
+				location: location,
+				lane: lane,
+				data: {
+					statis: map[location][lane].status
+				}
+			});
 		});
 	});
 	return output;
@@ -80,7 +80,21 @@ GameMap.prototype.destroy = function(location, lane) {
 };
 
 GameMap.prototype.serialize = function() {
-	return this.map;
+	var output = {
+		nexus: this.map.nexus.status,
+		turrets: []
+	};
+	var map = this.map;
+	['inhibitor', 'inner', 'outer'].forEach(function(location) {
+		['top', 'middle', 'bottom'].forEach(function(lane) {
+			output.turrets.push({
+				location: location,
+				lane: lane,
+				data: map[location][lane]
+			});
+		});
+	});
+	return output;
 };
 
 module.exports = GameMap;

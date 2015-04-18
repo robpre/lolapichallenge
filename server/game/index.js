@@ -39,6 +39,7 @@ Game.prototype.action = function(username, target, actionName, card, where, stat
 	});
 	var enemyIndex = activePlayerIndex ? 0 : 1;
 	var cardObj = this.getCardFor(activePlayerIndex, card);
+	debug(username, target, actionName, card, where, stat);
 	debug('action card obj', cardObj);
 	if(cardObj && ['attack', 'defend'].indexOf(actionName) > -1) {
 		switch(target) {
@@ -77,6 +78,7 @@ Game.prototype.attack = function(playerIndex, enemyIndex, card, where, stat) {
 	var lane = where.split('.')[1];
 	if(this.map[enemyIndex] && this.map[enemyIndex].open(location, lane) && this.deciders[stat]) {
 		var defendingCard = this.map[enemyIndex].getTurret(location, lane);
+		debug('defending card obj', defendingCard);
 		if(defendingCard) {
 			if(this.deciders[stat](card.stats[stat], defendingCard.stats[stat])) {
 				this.map[enemyIndex].destroy(location, lane);
@@ -198,6 +200,7 @@ Game.prototype.serialize = function(user) {
 
 	return {
 		turn: this.clients[this.turn].user,
+		yourTurn: this.turn === activePlayerIndex,
 		players: {
 			blue: this.getClient(activePlayerIndex, true),
 			red: this.getClient(enemyIndex)
