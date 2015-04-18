@@ -6,6 +6,13 @@ module.exports = ['$scope', 'urfState', 'socket', function($scope, urfState, soc
 	$scope.setPointer = function(card) {
 		cardPointer = card;	
 	};
+	$scope.attackEntity = function(position, lane) {
+		//use card pointer
+	};
+	$scope.defendEntity = function(position, lane) {
+		//use card pointer
+	};
+	$scope.endTurn = function() {};
 
 	var processUi = function() {
 		$scope.game.current = urfState.get();	
