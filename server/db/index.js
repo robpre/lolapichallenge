@@ -66,11 +66,24 @@ DB.prototype.getUser = function(uid, callback, query) {
 				debug('user not found looking in', err, uid);
 				return callback(err || 'user not found');
 			}
+			user.id = user._id.toString();
 			callback(null, user);
 		});
 	} else {
 		debug('!!Error!! no db connection');
 	}
+};
+
+DB.prototype.updateUser = function(uid, up, callback) {
+	this.db.collection('users').update({
+		_id: objID(uid)
+	}, up, function(err, arg2) {
+		if(err) {
+			debug('error updating user', err, arg2);
+			return callback(err);
+		}
+		callback();
+	});
 };
 
 DB.prototype.addUser = function(username, password, cb) {
@@ -147,6 +160,21 @@ DB.prototype.getUsersCards = function(uid, cards, cb) {
 			$in: mapIds(cards)
 		}
 	});
+};
+
+DB.prototype.writeResult = function(result, cb) {
+	if(this.db) {
+		var self = this;
+		this.db.collection('results').insert(result, function(err, doc) {
+			if(err) {
+				debug('error inserting result', err);
+				return cb(err);
+			}
+			cb(null, doc);
+		});
+	} else {
+		debug('!!Error!! no db connection');
+	}
 };
 
 DB.prototype.activeGames = function(cb) {

@@ -47,6 +47,15 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 			}
 		});
 	}
+	function getGame(callback) {
+		if(!session.activeGameID) {
+			return error(true, 'not in a game', 'recoverable');
+		}
+		var activeGame = _.findWhere(handler.games, {id: session.activeGameID});
+		if(!error(!activeGame, 'game not found', 'recoverable')) {
+			callback(activeGame);
+		}
+	}
 
 	socket.on('give me bank cards', function(callback) {
 		findUser(function(userObj) {
@@ -56,6 +65,9 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 
 	socket.on('find game', function(deck) {
 		// deck == [] of ids
+		if(session.activeGameID) {
+			return error(true, 'already in a game', 'recoverable');
+		}
 		// this will only find a user if they have all the cards
 		database.getUsersCards(session.loggedInUser, deck, function(err, userObj, cards) {
 			if(!error(err, 'can\'t find your cards: ', 'recoverable')) {
@@ -80,18 +92,51 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 					debug(game);
 					session.save(function(err) {
 						if(!error(err, 'error saving game to session', 'recoverable')) {
-							debug('game is ready: ', game.ready());
-							if(game.ready()) {
-								broadcast(game.getActiveSockets(), 'game found');
+							debug('game is ready: ', game.isReady());
+							if(game.isReady()) {
+								broadcast(game.getActiveSockets(), 'game found', game.serialize());
 							}
 						} else {
-							broadcast(game.getActiveSockets(), 'game over');
+							handler.closeGame(game);
 							session.activeGameID = null;
 						}
 					});
+					debug('this many games since launch: ', handler.games.length);
 				}
 			}
 		});
+	});
+
+	socket.on('action', function(target, type) {
+		getGame(function(activeGame) {
+			activeGame.action(type, function(err) {
+				if(error(err, 'error actioning')) {
+					broadcast(activeGame.getActiveSockets(), 'game over');
+				}
+			});
+		});
+	});
+
+	socket.on('end preround', function() {
+		getGame(function(activeGame) {
+			activeGame.endPreround(session.loggedInUser);
+		});
+	});
+
+	socket.on('ask', function() {
+		getGame(function(activeGame) {
+			socket.emit('game state', activeGame.serialize());
+		});
+	});
+};
+
+ConfigureSocket.prototype.closeGame = function(game) {
+	var ind = this.games.indexOf(game);
+	game.close(function() {
+		// remove it from memory
+		// hopefully get garbage collected
+		// worried about splicing array
+		this.games[ind] = null;
 	});
 };
 
