@@ -1,6 +1,8 @@
 var debug = require('debug')('urf:server:game:index');
 var ObjectID = require('mongodb').ObjectID;
 
+var GameMap = require('./map.js');
+
 function Game(database, playerOne) {
 	this.database = database;
 
@@ -8,7 +10,19 @@ function Game(database, playerOne) {
 	this.id = new ObjectID();
 
 	this.clients = [playerOne];
+
+	this.finished = false;
+
+	this.map = [
+		new GameMap(),
+		new GameMap()
+	];
+
+	return this;
 }
+
+Game.prototype.defend = function() {};
+Game.prototype.attack = function() {};
 
 Game.prototype.addClient = function(user, cb) {
 	if(this.hasSpace()) {
@@ -30,6 +44,35 @@ Game.prototype.getActiveSockets = function() {
 		return client.socket;
 	});
 };
+
+Game.prototype.deciders = {
+	assists: function(attackStat, defStat) {
+		return attackStat > defStat;
+	},
+	deaths: function(attackStat, defStat) {
+		return defStat > attackStat;
+	},
+	goldEarned: function(attackStat, defStat) {
+		return attackStat > defStat;
+	},
+	kills: function(attackStat, defStat) {
+		return attackStat > defStat;
+	},
+	largestKillingSpree: function(attackStat, defStat) {
+		return attackStat > defStat;
+	},
+	// -1 means a loose
+	winSpeed: function(attackStat, defStat) {
+		if( defStat !== -1 && attackStat !== -1 ) {
+			return attackStat < defStat;
+		} else {
+			// if the defending card lost(its game) then the attacking card wins this matchup
+			return defStat === -1;
+		}
+	}
+};
+
+// Game.prototype.
 
 // DO NOT USE THIS TO SAVE TO DB ATM
 // because ObjectID will create new id++ during application runtime

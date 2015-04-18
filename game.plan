@@ -24,14 +24,14 @@
 				destroyedCards: [],
 			},
 			{
-				turn: 3,
+				turn: 1,
 				completed: true
 				destroyedCards: [],
 			},
 			{
-				turn: 4,
+				turn: 2,
 				completed: false
-				destroyedCards: []
+		//		destroyedCards: []
 			}
 		],
 		finished: false
@@ -50,7 +50,6 @@
 		...
 	},
 	map: {
-		//blue is always the player you are sending the data to
 		1: {
 			nexus: {
 				status: true
