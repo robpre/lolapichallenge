@@ -1,6 +1,5 @@
 module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', function($scope, user, socket, $rootScope, $location) {
 	$scope.loginObj = {};
-
 	function message(err, success) {
 		if(err) {
 			$rootScope.$broadcast('flashMessage', {type: 'alert-danger', text: err});
@@ -8,7 +7,6 @@ module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', functio
 			$rootScope.$broadcast('flashMessage', {type: 'alert-success', text: success});
 		}
 	}
-
 	$scope.logon = function() {
 		user.login($scope.loginObj.username, $scope.loginObj.password)
 			.success(function(data, status) {
@@ -27,7 +25,7 @@ module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', functio
 			.error(function(reply, status) {
 				switch(status) {
 					case 403:
-						message('Incorrect password');
+						message('Incorrect password or username already taken');
 					break;
 					case 400:
 						message('Bad request');
