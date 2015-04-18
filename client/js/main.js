@@ -98,14 +98,6 @@ angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 			}
 		});
 
-		$rootScope.$on('$routeChangeStart', function(evt, next, current) {
-			if(!socket.connected) {
-				console.log(next);
-				if(next && next.templateUrl.indexOf('templates/index.html') === -1) {
-					$location.path('/');
-				}
-			}
-		});
 		$rootScope.$on('$routeChangeSuccess', function(evt, next, current) {
 			var windowLocation = (window.pageYOffset || document.documentElement.scrollTop);
 			if(windowLocation !== 0) {
