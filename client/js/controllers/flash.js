@@ -1,16 +1,29 @@
-module.exports = ['$scope', function($scope) {
-	$scope.$on('flashMessage', function(evt, message) {
-		$scope.message = message || {};
+var _ = require('lodash');
 
-		switch($scope.message.type) {
-			case 'alert-success':
-			case 'alert-danger':
-			case 'alert-info':
-			// these are ok
-			break;
-			default:
-				$scope.message.type = 'alert-info';
-			break;
+module.exports = ['$scope', '$timeout', function($scope, $timeout) {
+	$scope.messages = [];
+	$scope.$on('flashMessage', function(evt, message) {
+		if(message) {
+			switch(message.type) {
+				case 'alert-success':
+				case 'alert-info':
+					$timeout(function() {
+						_.remove($scope.messages, message);
+					}, 5000);
+				break;
+				case 'alert-danger':
+				// these are ok
+				break;
+				default:
+					message.type = 'alert-info';
+				break;
+			}
+
+			$scope.messages.push(message);
 		}
 	});
+
+	$scope.removeMessage = function(i) {
+		$scope.messages.splice(i, 1);
+	};
 }];

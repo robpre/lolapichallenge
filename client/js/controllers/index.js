@@ -22,7 +22,6 @@ module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', functio
 						message(null, 'Welcome back');
 					break;
 				}
-				$location.path('/lobby');
 			})
 			.error(function(reply, status) {
 				switch(status) {

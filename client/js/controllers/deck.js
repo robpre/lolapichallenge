@@ -1,5 +1,5 @@
 var _ = require('lodash');
-module.exports = ['$scope', 'urfDeck', function($scope, urfDeck) {
+module.exports = ['$scope', 'urfDeck', 'socket', '$rootScope', function($scope, urfDeck, socket, $rootScope) {
 	$scope.handler = {};
 	$scope.handler.deck = urfDeck.get();	
 	$scope.handler.cardPointer = 0;

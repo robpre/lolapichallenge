@@ -1,5 +1,7 @@
 var io = require('socket.io-client');
 
 module.exports = function() {
-	return io({autoConnect: false});
+	var sock = io({autoConnect: false});
+	window.DEBUGSOCKET=  sock;
+	return sock;
 };

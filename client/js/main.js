@@ -6,6 +6,7 @@ angular.module('urf', [require('angular-route')])
 	.service('socket', require('./services/socket.js'))
 	.service('urfDeck', require('./services/deck.js'))
 	.service('urfFind', require('./services/find.js'))
+	.controller('play', require('./controllers/play.js'))
 	.controller('flash', require('./controllers/flash.js'))
 	.controller('urfIndex', require('./controllers/index.js'))
 	.controller('urfDeckHandler', require('./controllers/deck.js'))
@@ -14,15 +15,11 @@ angular.module('urf', [require('angular-route')])
   	.controller('urfNav', ['$scope', function($scope, $element) {
 		$scope.enabled = false;
 		$scope.$on('urfUtility.nav.off', function() {
-			console.log('urfUtility.nav.off');
 			$scope.enabled = false;
-			console.log($scope, $element);
 		});
 		$scope.$on('urfUtility.nav.on', function() {
-			console.log('urfUtility.nav.on');
 			$scope.enabled = true;
-			console.log($scope, $element);
-		}); 
+		});
 	}])
 	.directive('urfCard', require('./directives/urf-card.js'))
 	.directive('urfMapEntity', require('./directives/urf-map-entity.js'))
@@ -45,52 +42,68 @@ angular.module('urf', [require('angular-route')])
 		};
 	}])
 	.config(['$routeProvider', function($routeProvider) {
-		$routeProvider.when('/', {
-			templateUrl: '../templates/index.html',
-			controller: 'urfIndex',
-			resolve: {
-				'tabStatus': function(urfUtility) {
-					urfUtility.enableNav(false);
+		$routeProvider
+			.when('/', {
+				templateUrl: '../templates/index.html',
+				controller: 'urfIndex',
+				resolve: {
+					'tabStatus': function(urfUtility) {
+						urfUtility.enableNav(false);
+					}
 				}
-			}
-		});
-		$routeProvider.when('/lobby', {
-			templateUrl: '../templates/lobby.html',
-			controller: 'urfLobby',
-			resolve: {
-				'tabStatus': function(urfUtility) {
-					urfUtility.enableNav(true);
+			})
+			.when('/lobby', {
+				templateUrl: '../templates/lobby.html',
+				controller: 'urfLobby',
+				resolve: {
+					'tabStatus': function(urfUtility) {
+						urfUtility.enableNav(true);
+					}
 				}
-			}
-		});
-		$routeProvider.when('/game', {
-			templateUrl: '../templates/game.html',
-			controller: 'urfGame',
-			resolve: {
-				'tabStatus': function(urfUtility) {
-					urfUtility.enableNav(false);
+			})
+			.when('/game', {
+				templateUrl: '../templates/game.html',
+				controller: 'urfGame',
+				resolve: {
+					'tabStatus': function(urfUtility) {
+						urfUtility.enableNav(false);
+					}
 				}
-			}
-		});
+			})
+			.otherwise({redirectTo: '/'});
 	}])
-	.run(['$rootScope', '$window', 'socket', '$location', 'user', function($rootScope, $window, socket, $location, user) {
-		//on disconnect redirect back to home and post a logout
-		socket.on('connection', function() {
-			$location.path('/lobby');
-		});
+	.run(['$rootScope', '$window', 'socket', '$location', 'user', '$timeout', function($rootScope, $window, socket, $location, user, $timeout) {
 		//on connection redirect to lobby
-		socket.on('disconnected', function() {
-			var goHome = function() {
-				$location.path('/');
-			};
-			user.logout().then(goHome, goHome);
+		socket.on('connect', function() {
+			$timeout(function() {//raaaaaaaace-ist
+				$location.path('/lobby');
+			});
 		});
 
-		$rootScope.$on('$locationChangeStart', function(evt, nextUrl, currentUrl) {
-			if(!socket.connected) {
+		//on disconnect redirect back to home and post a logout
+		socket.on('disconnect', function() {
+			user.logout().finally(function() {
 				$location.path('/');
+			});
+		});
+
+		socket.on('urfError', function(message) {
+			$rootScope.emit('flashMessage', {
+				text: message.message,
+				type: message.type === 'fatal' ? 'alert-danger' : 'alert-info'
+			});
+			if(message.type === 'fatal') {
+				socket.disconnect();
 			}
-			window.socket = socket;
+		});
+
+		$rootScope.$on('$routeChangeStart', function(evt, next, current) {
+			if(!socket.connected) {
+				console.log(next);
+				if(next && next.templateUrl.indexOf('templates/index.html') === -1) {
+					$location.path('/');
+				}
+			}
 		});
 		$rootScope.$on('$routeChangeSuccess', function(evt, next, current) {
 			var windowLocation = (window.pageYOffset || document.documentElement.scrollTop);
