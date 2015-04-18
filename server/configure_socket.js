@@ -54,7 +54,7 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 		});
 	});
 
-	socket.on('find game', function(deck, callback) {
+	socket.on('find game', function(deck) {
 		// deck == [] of ids
 		// this will only find a user if they have all the cards
 		database.getUsersCards(session.loggedInUser, deck, function(err, userObj, cards) {
