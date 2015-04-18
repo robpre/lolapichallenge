@@ -1,6 +1,9 @@
 <div ng-if="type == 'turret'" class="{{type}}-wrapper {{team}}-{{layer}}-{{lane}}">
-	<div class="map-turret">
-		<div class="inner {{team}}"></div>
+	<div ng-if="assigned" class="map-turret">
+		<div class="inner {{team}} assigned" style="background-image:url(http://ddragon.leagueoflegends.com/cdn/5.2.1/img/champion/{{assigned.championImage.image.full}})" ng-class="{destroyed: destroyed}"></div>
+	</div>
+	<div ng-if="!assigned" class="map-turret">
+		<div class="inner {{team}}" ng-class="{destroyed: destroyed}"></div>
 	</div>
 </div>
 <div ng-if="type == 'nexus'" class="{{type}}-wrapper {{team}}">

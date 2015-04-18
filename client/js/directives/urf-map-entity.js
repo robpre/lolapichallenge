@@ -8,7 +8,8 @@ module.exports = function() {
 			team: '@',
 			layer: '@',
 			lane: '@',
-			destroyed: '='
+			destroyed: '=',
+			assigned: '='
 		},
 		link: function(scope, element, attrs) {}
 	};

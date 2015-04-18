@@ -358,16 +358,21 @@ urf-card.deck-select .card {
 						left: 50%;
 						margin: -7px 0px 0px -7px;
 						&.red {
-							background: $teamRed;
+							background-color: $teamRed;
 							&.destroyed {
-								background: $muteColour;
+								background-color: $muteColour;
 							}
 						}
 						&.blue {
-							background: $teamBlue;
+							background-color: $teamBlue;
 							&.destroyed {
-								background: $muteColour;
+								background-color: $muteColour;
 							}
+						}
+						&.assigned {
+							background-size:cover;
+							background-repeat:no-repeat;
+							background-position:center center;
 						}
 					}
 				}
