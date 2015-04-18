@@ -1,7 +1,7 @@
 var angular = require('angular');
 var _ = require('lodash');
-// deps
-angular.module('urf', [require('angular-route')])
+require('angular-bootstrap');
+angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 	.service('user', require('./services/user.js'))
 	.service('socket', require('./services/socket.js'))
 	.service('urfDeck', require('./services/deck.js'))
