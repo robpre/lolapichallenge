@@ -1,0 +1,153 @@
+//Server:
+{
+	gameid: 'b05c2ed52ed56e7061fa586110b8e874',
+	progress: {
+		//have we completed pre
+		preround: {
+			finished: {
+				//timestamp for logging sake
+				1: 1029939849844,
+				//since preround is completed in this fixture, this is an example..., it may be true if timeout ended
+				2: false/true
+			},
+			completed: true,	
+		},
+		rounds: [
+			{
+				turn: 1,
+				completed: true,
+				destroyedCards: [],
+			},
+			{
+				turn: 2,
+				completed: true
+				destroyedCards: [],
+			},
+			{
+				turn: 3,
+				completed: true
+				destroyedCards: [],
+			},
+			{
+				turn: 4,
+				completed: false
+				destroyedCards: []
+			}
+		],
+		finished: false
+	},
+	players: {
+		1: {
+			userId: <userId>,
+			username: 'Stansbridge',
+			remainingDeck: [
+				object, object
+			],
+			destroyedDeck: [
+				object, object
+			]
+		},
+		...
+	},
+	map: {
+		//blue is always the player you are sending the data to
+		1: {
+			nexus: {
+				status: true
+			},
+			turrets: {
+				inhibitor: {
+					top: {
+						status: true,
+						defending: <cardId/object> 
+					},
+					middle: {...},
+					bottom: {...}					
+				},
+				inner: {
+					top: {...},
+					middle: {
+						status: false 
+					},
+					bottom: {...}
+				},
+				outer: {
+					top: {...},
+					middle: {
+						status: false
+					},
+					bottom: {...}
+				}
+			}
+		},
+		...
+	},
+	deciders: {
+		//perhaps an object setup with functions for each of the available skills (this is the truth predicate)	
+	}
+}
+
+Rough logic
+------------------------------------------------------
+# preround.turret.inhibitor.middle.assign, card
+-> request <type>.entity>
+if(!game.progress.finished) {
+	switch(<type>) {
+		case <type>==preround: 
+			if(!game.progress.preround.completed) {
+				actionPreRound(playerId, entityAction, function(err, done));
+			}
+			break;
+		case <type>==round:
+			if(!game.progress.rounds[roundId].completed && game.progress.rounds[round].turn === MATCHES USER AGAINST GAME PLAYERID) {
+				actionRound(playerId, roundId, entityAction, function(err, done));
+			}
+			break;
+		case <type>==ask:
+			//RETURN GAME STATE
+			break;
+	}
+} else {
+	//game is over pal, RETURN GAME STATE
+}
+------------------------------------------------------
+//SERVER IS A FLAG THAT ALLOWS THE GAME TO CALL ITS OWN ACTIONS AND FOR DATA TO BE HANDLED IN A SPECIAL WAY
+actionPreRound(player, action, callback, server) {
+	switch(action) {
+		case 'turret.<location>.assign':
+			//check if turret belongs to player
+			//check if turret not destroyed
+			//check if card is not already defending this turret
+			//etc
+			//maybe wrap this in a function that can be called from the actionRound
+			break;
+		case 'finish':
+			//check if player hasn't ended the round already
+			gamestate.progress.preround.finished[playerId] = (server ? true : UNIXTIMESTAMP)
+			break;
+	}
+};
+------------------------------------------------------
+actionRound(player, round, action, callback, server) {
+	switch(action) {
+		case 'turret.<location>.assign':
+			//see above
+			break;
+		case 'turret.<location>.attack':
+			//check if turret not destroyed
+			//check if turret is enemies
+			//calculateAttackFunction()
+			//CALL FINISH TO END THE TURN
+			break;
+		case 'finish':
+			//check if player hasn't ended the round already
+			gamestate.progress.preround.finished[playerId] = (server ? true : UNIXTIMESTAMP)
+			break;
+	}
+};
+------------------------------------------------------
+generateResponse = function(state, playerId) {
+	//this function generates a state response back to the player with information to update on their screen
+	//information we need to hide is stripped here, see states.example
+}
+------------------------------------------------------
