@@ -56,7 +56,6 @@ Server.prototype.listen = function(port, cb) {
 				socketConfigrationHandler.handle(socket, session);
 			});
 
-
 		urfServer.socket = sessionedSocket;
 		urfServer.httpInst = httpInst;
 

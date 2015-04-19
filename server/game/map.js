@@ -36,7 +36,7 @@ GameMap.prototype.open = function(location, lane) {
 	if(!next) {
 		return true;
 	}
-	return !this.map.turrests[next][lane].status;
+	return !this.map.turrets[next][lane].status;
 };
 
 GameMap.prototype.cardLess = function() {
@@ -60,7 +60,7 @@ GameMap.prototype.cardLess = function() {
 };
 
 GameMap.prototype.getTurret = function(location, lane) {
-	return this.map.turrests[location][lane];
+	return this.map.turrets[location][lane];
 };
 
 // GameMap.prototype.openTurrets = function() {
