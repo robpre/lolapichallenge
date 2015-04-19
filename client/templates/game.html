@@ -29,7 +29,7 @@
 				<div class="col-md-4">
 					<table ng-if="cardPointer && (game.round.type !== 'preround')">
 						<tr ng-repeat="(key, stat) in cardPointer.stats" ng-click="setStatPointer(key)">
-							<td>{{key}}</td>
+							<td>{{key | humanize}}</td>
 							<td>{{stat}}</td>
 						</tr>
 					</table>
@@ -39,6 +39,9 @@
 						<div class="deck-container">
 							<urf-card ng-repeat="card in game.deck" ng-click="setPointer(card)" ng-class="{'deck-select': cardPointer._id == card._id}" tile="true" card="card"></urf-card>
 					</div>
+				</div>
+				<div class="col-md-2" ng-controller="urfPlay">
+					<div ng-click="" class="btn btn-play btn-lg">Play</div>
 				</div>
 			</div>
 		</div>

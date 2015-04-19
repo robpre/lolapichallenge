@@ -71,6 +71,7 @@ Game.prototype.defend = function(playerIndex, card, where) {
 	var lane = where.split('.')[1];
 	if(this.map[playerIndex] && this.map[playerIndex].open(location, lane)) {
 		this.map[playerIndex].defend(location, lane, card);
+		_.remove(this.clients[playerIndex].deck, card);
 	}
 };
 Game.prototype.attack = function(playerIndex, enemyIndex, card, where, stat) {
@@ -82,6 +83,10 @@ Game.prototype.attack = function(playerIndex, enemyIndex, card, where, stat) {
 		if(defendingCard) {
 			if(this.deciders[stat](card.stats[stat], defendingCard.stats[stat])) {
 				this.map[enemyIndex].destroy(location, lane);
+				_.remove(this.clients[enemyIndex].deck, defendingCard);
+				this.clients[enemyIndex].destroyedDeck.push(defendingCard);
+			} else {
+				_.remove(this.clients[playerIndex], card);
 			}
 		} else {
 			this.map[enemyIndex].destroy(location, lane);

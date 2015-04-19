@@ -86,8 +86,7 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 						user: userObj.username,
 						deck: cards,
 						destroyedDeck: [],
-						socket: socket,
-						session: session
+						socket: socket
 					};
 
 					if(!game) {
