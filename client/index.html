@@ -6,6 +6,7 @@
 	<title>Urf Ninja</title>
 	<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css">
 	<link href='http://fonts.googleapis.com/css?family=Galdeano' rel='stylesheet' type='text/css'>
+	<link href='http://fonts.googleapis.com/css?family=Oswald' rel='stylesheet' type='text/css'>
 	<link rel="stylesheet" type="text/css" href="css/styles.css">
 </head>
 <body>
@@ -15,12 +16,10 @@
 				<div class="col-md-2">
 					<a href="#/"><h1 class="navLogo">Cards <span>of</span><br/>Legends</h1></a>
 				</div>
-				<div class="col-md-7">
+				<div class="col-md-10">
 					<div ng-controller="urfDeckHandler" class="urf-card-deck">
 						<urf-card ng-repeat="card in handler.deck track by $index" tip="bottom" ng-click="setPointer($index)" render="square" card="card" tile="true" size="small" ng-class="{'deck-select': handler.cardPointer == $index}"></urf-card>
 					</div>
-				</div>
-				<div class="col-md-3" ng-controller="urfPlay">
 					<div ng-click="findGame()" class="btn btn-play btn-lg lobby-play">Play</div>
 				</div>
 			</div>
