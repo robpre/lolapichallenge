@@ -48,12 +48,14 @@ Server.prototype.listen = function(port, cb) {
 				if(err) {
 					return debug('Error setting up session! ', err);
 				}
-				if(!session.loggedInUser) {
-					debug('user not authed, closing socket');
-					return socket.disconnect();
-				}
-				debug(session);
-				socketConfigrationHandler.handle(socket, session);
+				// session.reload(function() {
+					if(!session.loggedInUser) {
+						debug('user not authed, closing socket');
+						return socket.disconnect();
+					}
+					debug(session);
+					socketConfigrationHandler.handle(socket, session);
+				// });
 			});
 
 		urfServer.socket = sessionedSocket;

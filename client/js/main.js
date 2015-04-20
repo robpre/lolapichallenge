@@ -1,7 +1,9 @@
 var angular = require('angular');
 var _ = require('lodash');
+
 require('angular-bootstrap');
-angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
+
+angular.module('urf', [require('angular-route'), 'ui.bootstrap', require('angular-spinner')])
 	.filter('humanize', require('./filters/humanize.js'))
 	.service('user', require('./services/user.js'))
 	.service('socket', require('./services/socket.js'))
