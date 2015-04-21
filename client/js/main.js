@@ -2,14 +2,14 @@ var angular = require('angular');
 var _ = require('lodash');
 
 require('angular-bootstrap');
-
-angular.module('urf', [require('angular-route'), 'ui.bootstrap', require('angular-spinner')])
+angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 	.filter('humanize', require('./filters/humanize.js'))
 	.service('user', require('./services/user.js'))
 	.service('socket', require('./services/socket.js'))
 	.service('urfDeck', require('./services/deck.js'))
 	.service('urfState', require('./services/state.js'))
 	.service('urfFind', require('./services/find.js'))
+	.service('urfSpin', require('./services/spin.js'))
 	.controller('flash', require('./controllers/flash.js'))
 	.controller('urfPlay', require('./controllers/play.js'))
 	.controller('urfIndex', require('./controllers/index.js'))
