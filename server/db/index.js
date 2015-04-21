@@ -104,7 +104,7 @@ DB.prototype.addUser = function(username, password, cb) {
 						cb(err);
 						return debug(err || 'failed creating user');
 					}
-					cb(null, userObj);
+					cb(null, userObj.ops[0]);
 				});
 		});
 	} else {

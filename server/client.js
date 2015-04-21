@@ -46,6 +46,7 @@ module.exports = function(baseDir, sessionMiddleware, cookieParser, database) {
 
 			// attach to the session
 			req.session.loggedInUser = userObj._id;
+
 			// save the session
 			req.session.save(function(err) {
 				if(err) {

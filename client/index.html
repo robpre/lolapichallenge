@@ -26,6 +26,7 @@
 		</div>
 	</nav>
 	<div class="ng-cloak" ng-controller="flash">
+		<span us-spinner></span>
 		<ul>
 			<li ng-repeat="message in messages" ng-if="message.text" class="alert {{message.type}}" role="alert">
 				<span class="glyphicon"></span>

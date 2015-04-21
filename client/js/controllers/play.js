@@ -9,7 +9,7 @@ module.exports = ['$scope', '$rootScope', 'urfDeck', 'urfFind', '$location', fun
 				$rootScope.$broadcast('flashMessage', {text: 'Something went wrong finding you a game'});
 			});
 
-			$location.path('/game');
+			$location.path('/game').replace();
 		} else {
 			$rootScope.$broadcast('flashMessage', {text: 'Pick some more cards'});
 		}

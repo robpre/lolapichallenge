@@ -1,4 +1,4 @@
-module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', function($scope, user, socket, $rootScope, $location) {
+module.exports = ['$scope', 'user', 'socket', '$rootScope', 'urfSpin', function($scope, user, socket, $rootScope, urfSpin) {
 	$scope.loginObj = {};
 	function message(err, success) {
 		if(err) {
@@ -8,6 +8,7 @@ module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', functio
 		}
 	}
 	$scope.logon = function() {
+		// .spin();
 		user.login($scope.loginObj.username, $scope.loginObj.password)
 			.success(function(data, status) {
 				socket.connect();
@@ -34,6 +35,9 @@ module.exports = ['$scope', 'user', 'socket', '$rootScope', '$location', functio
 						message('Something went wrong');
 					break;
 				}
+			})
+			.finally(function() {
+				// .stop();
 			});
 	};
 }];

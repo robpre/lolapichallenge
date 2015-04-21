@@ -1,13 +1,15 @@
 var angular = require('angular');
 var _ = require('lodash');
+
 require('angular-bootstrap');
 angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
-	.filter('humanize', require('humanize-string'))
+	.filter('humanize', require('./filters/humanize.js'))
 	.service('user', require('./services/user.js'))
 	.service('socket', require('./services/socket.js'))
 	.service('urfDeck', require('./services/deck.js'))
 	.service('urfState', require('./services/state.js'))
 	.service('urfFind', require('./services/find.js'))
+	.service('urfSpin', require('./services/spin.js'))
 	.controller('flash', require('./controllers/flash.js'))
 	.controller('urfPlay', require('./controllers/play.js'))
 	.controller('urfIndex', require('./controllers/index.js'))
@@ -77,15 +79,13 @@ angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 	.run(['$rootScope', '$window', 'socket', '$location', 'user', '$timeout', function($rootScope, $window, socket, $location, user, $timeout) {
 		//on connection redirect to lobby
 		socket.on('connect', function() {
-			$timeout(function() {//raaaaaaaace-ist
-				$location.path('/lobby');
-			});
+			$location.path('/lobby').replace();
 		});
 
 		//on disconnect redirect back to home and post a logout
 		socket.on('disconnect', function() {
 			user.logout().finally(function() {
-				$location.path('/');
+				$location.path('/').replace();
 			});
 		});
 
@@ -96,6 +96,8 @@ angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 			});
 			if(message.type === 'fatal') {
 				socket.disconnect();
+			} else if(message.type === 'recoverable') {
+				$location.path('/lobby').replace();
 			}
 		});
 

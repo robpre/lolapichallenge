@@ -11,7 +11,7 @@ module.exports = function(db, secret) {
 			secret: secret,
 			store: store,
 			resave: true,
-			saveUninitialized: true
+			saveUninitialized: false
 		})
 	};
 };

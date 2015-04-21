@@ -53,12 +53,12 @@ Game.prototype.action = function(username, target, actionName, card, where, stat
 					switch(actionName) {
 						case 'attack':
 							this.attack(activePlayerIndex, enemyIndex, cardObj, where, stat);
+							this.turn = this.turn ? 0 : 1;
 						break;
 						case 'defend':
 							this.defend(activePlayerIndex, cardObj, where);
 						break;
 					}
-					this.turn = this.turn ? 0 : 1;
 				}
 			break;
 		}
