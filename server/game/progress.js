@@ -2,7 +2,7 @@ var _ = require('lodash');
 
 function Progress() {
 
-	this.rounds = [];
+	this.actions = [];
 
 	this.preround = true;
 
@@ -13,7 +13,7 @@ Progress.prototype.start = function() {
 	this.preround = false;
 };
 
-Progress.prototype.endRoundForUser = function(user) {
+Progress.prototype.endPreroundForUser = function(user) {
 	this.prerounded[user] = true;
 	if(_.size(this.prerounded) === 2) {
 		this.preround = false;
@@ -22,8 +22,8 @@ Progress.prototype.endRoundForUser = function(user) {
 };
 
 Progress.prototype.addRound = function(username, d) {
-	this.rounds.push({
-		id: username,
+	this.actions.push({
+		owner: username,
 		data: d
 	});
 };
@@ -31,7 +31,7 @@ Progress.prototype.addRound = function(username, d) {
 Progress.prototype.serialize = function() {
 	return {
 		preround: this.preround,
-		rounds: this.rounds
+		actions: this.actions
 	};
 };
 

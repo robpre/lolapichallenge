@@ -78,9 +78,9 @@ Game.prototype.attack = function(playerIndex, enemyIndex, card, where, stat) {
 	var location = where.split('.')[0];
 	var lane = where.split('.')[1];
 	if(this.map[enemyIndex] && this.map[enemyIndex].open(location, lane) && this.deciders[stat]) {
-		var defendingCard = this.map[enemyIndex].getTurret(location, lane);
+		var defendingCard = this.map[enemyIndex].getDefendingCard(location, lane);
 		debug('defending card obj', defendingCard);
-		if(defendingCard) {
+		if(defendingCard && this.deciders[stat]) {
 			if(this.deciders[stat](card.stats[stat], defendingCard.stats[stat])) {
 				this.map[enemyIndex].destroy(location, lane);
 				_.remove(this.clients[enemyIndex].deck, defendingCard);

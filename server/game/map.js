@@ -62,7 +62,9 @@ GameMap.prototype.cardLess = function() {
 GameMap.prototype.getTurret = function(location, lane) {
 	return this.map.turrets[location][lane];
 };
-
+GameMap.prototype.getDefendingCard = function(location, lane) {
+	return this.getTurret(location, lane).defending;
+};
 // GameMap.prototype.openTurrets = function() {
 // 	['inhibitor', 'inner', 'outer'].forEach(function(location) {
 // 		['top', 'middle', 'bottom'].forEach(function(lane) {

@@ -66,8 +66,9 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 		});
 	});
 
-	socket.on('find game', function(deck) {
+	socket.on('find game', function(deck, callback) {
 		// deck == [] of ids
+		debugger;
 		if(session.activeGameID) {
 			session.activeGameID = null;
 			session.save(function() {
