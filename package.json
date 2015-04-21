@@ -1,6 +1,6 @@
 {
   "name": "lolapichallenge",
-  "version": "0.3.2",
+  "version": "0.3.3",
   "description": "The strategic URF game we've all been waiting for...",
   "main": "index.js",
   "scripts": {

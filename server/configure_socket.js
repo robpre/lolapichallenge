@@ -175,7 +175,7 @@ ConfigureSocket.prototype.closeGame = function(game) {
 
 ConfigureSocket.prototype.findGame = function() {
 	return !!this.games.length && _.find(this.games, function(game) {
-		return game.hasSpace();
+		return game && game.hasSpace();
 	});
 };
 
