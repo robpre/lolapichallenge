@@ -68,7 +68,6 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 
 	socket.on('find game', function(deck, callback) {
 		// deck == [] of ids
-		debugger;
 		if(session.activeGameID) {
 			session.activeGameID = null;
 			session.save(function() {
@@ -87,7 +86,8 @@ ConfigureSocket.prototype.handle = function(socket, session) {
 						user: userObj.username,
 						deck: cards,
 						destroyedDeck: [],
-						socket: socket
+						socket: socket,
+						session: session
 					};
 
 					if(!game) {
@@ -174,7 +174,7 @@ ConfigureSocket.prototype.closeGame = function(game) {
 };
 
 ConfigureSocket.prototype.findGame = function() {
-	return !!this.games.length && _.findWhere(this.games, function(game) {
+	return !!this.games.length && _.find(this.games, function(game) {
 		return game.hasSpace();
 	});
 };

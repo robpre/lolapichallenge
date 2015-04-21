@@ -79,7 +79,8 @@ angular.module('urf', [require('angular-route'), 'ui.bootstrap'])
 	.run(['$rootScope', '$window', 'socket', '$location', 'user', '$timeout', function($rootScope, $window, socket, $location, user, $timeout) {
 		//on connection redirect to lobby
 		socket.on('connect', function() {
-			$location.path('/lobby');
+			$location.path('/lobby').replace();
+			$rootScope.$apply();
 		});
 
 		//on disconnect redirect back to home and post a logout

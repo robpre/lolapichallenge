@@ -52,7 +52,7 @@ Server.prototype.listen = function(port, cb) {
 					debug('user not authed, closing socket');
 					return socket.disconnect();
 				}
-				debug(session);
+				// debug(session);
 				socketConfigrationHandler.handle(socket, session);
 			});
 
