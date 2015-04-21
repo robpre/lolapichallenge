@@ -7,8 +7,6 @@ $primaryColour: #192335;
 $highlightPrimaryColour: #122F52;
 $altColour: #d75000;
 $muteColour: #252a34;
-$navHeight: 85px;
-$navMargin: 14px;
 
 $teamRed: rgb(202, 54, 54);
 $teamBlue: rgb(64, 64, 195);
@@ -45,7 +43,6 @@ form .form-group.urf-form-filter input {
 	border-color: $highlightPrimaryColour;
 }
 .navbar, #navbar, .navbar-urf {
-	height: $navHeight;
 	background-color: darken($highlightPrimaryColour, 30);
 }
 .navbar.navbar-hide {
@@ -55,14 +52,15 @@ form .form-group.urf-form-filter input {
 .forgive-nav {
 	// we r sorry
 	position:relative;
-	top: -$navHeight;
+	top: -18%;
 }
 
 .lobby-play {
 	margin-left:40px;
 }
 .nav-items>* {
-	margin-top: $navMargin;
+	padding-top: 1em;
+	padding-bottom: 1em;
 }
 .urf-lobby {
 	margin-left:40px;
@@ -230,7 +228,7 @@ urf-card.deck-select .card {
 		min-width: 25%;
 		max-width: 50%;
 		max-height: 10em;
-		overflow-y: auto;
+		overflow-y: none;
 		margin: 0 auto;
 	}
 
